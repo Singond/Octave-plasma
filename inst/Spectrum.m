@@ -156,8 +156,8 @@ classdef Spectrum
 				printf("    accumulations:        %d\n", self(i).accumulations);
 				printf("    data points:          %d\n", numel(self(i).wl));
 				for j = 1:self(i).metadata.length
-					printf("    %s:     %s\n", self(i).metadata.keys(j),
-						self(i).metadata.values(j));
+					printf("    %-21s %s\n", [self(i).metadata.keys{j} ":"],
+						deblank(disp(self(i).metadata.values{j})));
 				endfor
 				printf("    description:\n");
 				printf("      %s\n",
@@ -226,6 +226,11 @@ endclassdef
 %!test
 %! S = Spectrum(10:10:100, [7 2 6 0 4 1 9 3 2 3], "some metadata", 2400);
 %! assert(S.metadata("some metadata"), 2400);
+
+%!# Display with metadata
+%!test
+%! S = Spectrum(10:10:100, [7 2 6 0 4 1 9 3 2 3], "some metadata", 2400);
+%! evalc("disp(S)");  # Should not produce an error
 
 %!# As array
 %!test
