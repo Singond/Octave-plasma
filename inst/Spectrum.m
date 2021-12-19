@@ -222,9 +222,10 @@ endclassdef
 %! S = Spectrum(10:10:100, [7 2 6 0 4 1 9 3 2 3], "description",
 %!     "A long\ndescription");
 %! assert(S.description, "A long\ndescription");
+%!# Metadata
 %!test
-%! S = Spectrum(10:10:100, [7 2 6 0 4 1 9 3 2 3], "grating", 2400);
-%! assert(S.metadata("grating"), 2400);
+%! S = Spectrum(10:10:100, [7 2 6 0 4 1 9 3 2 3], "some metadata", 2400);
+%! assert(S.metadata("some metadata"), 2400);
 
 %!# As array
 %!test
