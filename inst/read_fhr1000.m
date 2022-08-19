@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn  {Function file} {@var{S} =} loadspectrum(@var{file})
+## @deftypefn  {Function file} {@var{S} =} read_fhr1000(@var{file})
 ## Read spectrum from @var{file} in the file format produced
 ## by the @emph{Horiba FHR 1000} spectrometer.
 ##
@@ -46,7 +46,7 @@
 ## The return value @var{S} is a @code{Spectrum} object with the wavelengths
 ## in nanometres and the spectral intensity in arbitrary units.
 ## @end deftypefn
-function S = load_fhr1000(filename)
+function S = read_fhr1000(filename)
 	f = fopen(filename, "r");
 
 	## Parse the header

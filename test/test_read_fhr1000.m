@@ -1,5 +1,5 @@
 %!test
-%! s = load_fhr1000("data/fhr1000/data-04.txt");
+%! s = read_fhr1000("data/fhr1000/data-04.txt");
 %! assert(s.title, "W_Ar_DC_3Pa_1493W_439V_3_4A");
 %! assert(s.acqtime, 0.07);
 %! assert(s.accumulations, 20);
