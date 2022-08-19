@@ -1,8 +1,8 @@
-Name: singon-spectroscopy
+Name: singon-plasma
 Version: 0.0.1-alpha
-Date: 2021-12-18
-Author: Singon <singond@seznam.cz>
-Maintainer: Singon <singond@seznam.cz>
-Title: Spectroscopy utilities for Octave
-Description: A set of tools for working with spectroscopy data
+Date: 2022-09-27
+Author: Jan Slany <singond@seznam.cz>
+Maintainer: Jan Slany <singond@seznam.cz>
+Title: Plasma physics toolkit
+Description: Utilities for plasma physics experiments.
 Categories: physics
