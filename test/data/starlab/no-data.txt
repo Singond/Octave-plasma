@@ -1,0 +1,33 @@
+;PC Software:StarLab Version 3.72 Build 3
+! ******* Warning: Do not modify this file. Changes may prevent   ********
+! ******* the StarLab Log reader from opening the file correctly. ********
+;Logged:18/08/2022 at 15:46:55
+;File Version:5
+;Time Resolution:1 microseconds
+;Graph Mode:Merge
+;Graph Type:Line
+;Notes:                                                            
+
+;Channel A:Vega Pyroelectric PE9 (s/n:574745)  VG2.54 (s/n:547613)
+
+;Channel A:Details
+;Name:PE9
+;Graph Color:RGB(14,104,168)
+;Units:J
+;Settings:Measuring:Energy
+;Settings:Wavelength:206
+;Settings:Range:200uJ
+;Settings:Diffuser:N/A
+;Settings:Pulse Width:30uS
+;Settings:Threshold:N/A
+
+;Channel A:Statistics
+;Min:0.000uJ             
+;Max:0.000uJ             
+;Average:0.000uJ             
+;Std.Dev.:0.000uJ             
+;Overrange:0                   
+;Total Pulses:0                   
+;--------------------
+
+
