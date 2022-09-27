@@ -1,5 +1,7 @@
 %!test
 %! d = read_starlab("data/starlab/energy.txt");
+%! assert(d.name, "PE9");
+%! assert(d.units, "J");
 %! assert(size(d.t), [1141, 1]);
 %! assert(size(d.in), [1141, 1]);
 %! assert(d.t(1), 0);

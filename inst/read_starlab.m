@@ -84,16 +84,29 @@ function D = read_starlab(varargin)
 	D = struct();
 	try
 		assert(startsWith(fgetl(f), ";PC Software:StarLab Version"));
-		fskipl(f, 34);
-	catch
+		fskipl(f, 9);
+		## Channel A
+		fscanf(f, ";Channel A:");
+		D.description = fgetl(f);
+		fskipl(f, 2);
+		fscanf(f, ";Name:");
+		D.name = fgetl(f);
+		fskipl(f, 1);
+		fscanf(f, ";Units:");
+		D.units = fgetl(f);
+		fskipl(f, 19);
+	catch err
 		error("Wrong file format in %s: %s", filename, err);
+		if (filelocal)
+			fclose(f);
+			return
+		end
 	end
 	if (feof(f))
 		## No data after header
 		warning("No data in %s", filename);
 		D.t = [];
 		D.in = [];
-		return;
 	else
 		data = dlmread(f, "emptyvalue", args.emptyvalue);
 		D.t = data(:,1);
