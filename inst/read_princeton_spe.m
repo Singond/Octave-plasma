@@ -36,6 +36,7 @@ function D = read_princeton_spe(file)
 			otherwise
 				error("Unknown datatype: %d", dt);
 		end
+		D.datatype = datatype;
 		fseek(f, 656);
 		D.ydim = fread(f, 1, "uint16");
 		fseek(f, 1446);
