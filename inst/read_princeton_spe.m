@@ -50,21 +50,26 @@ function D = read_princeton_spe(file)
 		rethrow(err);
 	end
 
-	## Data
+	## Read data
 	if (D.version < 3)
 		fseek(f, 4100);
 		data = fread(f, Inf, datatype);
 		data = reshape(data, D.xdim, D.ydim, []);
 		if (size(data, 3) != D.numframes)
-			error("Expected %d frames, found %d.",
+			error("read_princeton_spe: Expected %d frames, found %d.",
 				D.numframes, size(data, 3));
 		endif
-		## Data is in row-major order, Octave expects column-major.
-		## Switch first two dimensions to fix this.
-		D.data = permute(data, [2 1 3]);
+	elseif (D.xdim > 0 && D.ydim > 0 && D.numframes > 0)
+		warning("read_princeton_spe: Reading SPE 3.x in compatibility mode");
+		fseek(f, 4100);
+		data = fread(f, D.xdim * D.ydim * D.numframes, datatype);
+		data = reshape(data, D.xdim, D.ydim, []);
 	else
-		error("reading SPE version 3.x not implemented yet");
+		error("read_princeton_spe: Reading SPE 3.x not implemented yet");
 	end
+	## Data is in row-major order, Octave expects column-major.
+	## Switch first two dimensions to fix this.
+	D.data = permute(data, [2 1 3]);
 end
 
 %!error <Error reading>
