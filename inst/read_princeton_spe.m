@@ -1,3 +1,44 @@
+## -*- texinfo -*-
+## @deftypefn  {} {@var{D} =} read_princeton_spe (@var{file})
+##
+## Read data in binary SPE format produced by @emph{Princeton Instruments}
+## software.
+##
+## @var{file} is a file path or an open file handle.
+##
+## Note that there are several versions of the SPE format,
+## only some of which are supported by this function:
+##
+## @itemize
+## @item
+## Versions 2.x (and possibly older) start with a 4100 bytes-long header
+## which contains information necessary to correctly read the image data
+## and some optional metadata.
+## This header is followed by the raw image data.
+##
+## @item
+## Versions 3.x retain the header structure, but may leave its values unset.
+## Instead, the information required for understanding the data is placed
+## in a XML footer at the end of the file.
+## Moreover, individual frames in the image data may be followed by frame
+## metadata.
+## @end itemize
+##
+## This function supports parsing SPE versions 2.x.
+## Versions 3.x are mostly unsupported, because understanding their structure
+## requires parsing the XML footer, for which there is no suitable
+## implementation in Octave.
+## If the version is not supported, the function fails with an error.
+##
+## However, in some files, the most important values like image dimensions
+## or number of frames are also set in the header to make the file
+## backward-compatible with older software.
+## In this case, this function ignores the footer and tries reading
+## the data based on the information in the header, while guessing the
+## amount of metadata between frames from the total size.
+## This mode of operation is indicated by a warning message.
+## Note that it is a hack at best and errors are to be expected.
+## @end deftypefn
 function D = read_princeton_spe(file)
 	cleanup = [];
 
