@@ -1,6 +1,6 @@
 ## -*- texinfo -*-
-## @deftypefn  {Function file} {@var{D} =} read_starlab (@var{file})
-## @deftypefnx {Function file} {@var{D} =} read_starlab @
+## @deftypefn  {} {@var{D} =} read_starlab (@var{file})
+## @deftypefnx {} {@var{D} =} read_starlab @
 ##   (@dots{}, @qcode{"emptyvalue"}, @var{value})
 ##
 ## Read data from @var{file} in the format produced by the

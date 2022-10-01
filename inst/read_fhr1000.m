@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn  {Function file} {@var{S} =} read_fhr1000(@var{file})
+## @deftypefn  {} {@var{S} =} read_fhr1000(@var{file})
 ## Read spectrum from @var{file} in the file format produced
 ## by the @emph{Horiba FHR 1000} spectrometer.
 ##
