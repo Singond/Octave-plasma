@@ -1,10 +1,32 @@
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{D} =} read_princeton_spe (@var{file})
+## @deftypefn  {} {[@var{img}, @var{meta}] =} read_princeton_spe (@var{file})
 ##
 ## Read data in binary SPE format produced by @emph{Princeton Instruments}
 ## software.
 ##
-## @var{file} is a file path or an open file handle.
+## The file to read from is given in @var{file}.
+## This can be a file path or an open file handle.
+## The return value @var{img} is the image data arranged into a 3D array,
+## where 2D images (frames) are stacked along the third dimension.
+## Metadata read from the header can optionally be returned in the second
+## return value @var{meta} in the form of a struct with the following fields:
+##
+## @table @code
+## @item  xdim
+## @itemx ydim
+## The x- and y-dimensions of the image, respectively.
+##
+## @item numframes
+## Number of frames.
+##
+## @item datatype
+## The original data type used to encode the image.
+## This can be either @qcode{"int16"}, @qcode{"int32"},
+## @qcode{"uint16"}, @qcode{"uint32"} or @qcode{"float32"}.
+##
+## @item version
+## Version of the SPE file format.
+## @end table
 ##
 ## Note that there are several versions of the SPE format,
 ## only some of which are supported by this function:
@@ -39,7 +61,7 @@
 ## This mode of operation is indicated by a warning message.
 ## Note that it is a hack at best and errors are to be expected.
 ## @end deftypefn
-function D = read_princeton_spe(file)
+function [img, D] = read_princeton_spe(file)
 	cleanup = [];
 
 	if (ischar(file))
@@ -138,7 +160,7 @@ function D = read_princeton_spe(file)
 	end
 	## Data is in row-major order, Octave expects column-major.
 	## Switch first two dimensions to fix this.
-	D.data = permute(data, [2 1 3]);
+	img = permute(data, [2 1 3]);
 end
 
 %!error <Error reading>
