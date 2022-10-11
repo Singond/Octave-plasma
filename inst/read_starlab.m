@@ -64,11 +64,14 @@ function [data, D] = read_starlab(varargin)
 	p.parse(varargin{:});
 	args = p.Results;
 
-	filelocal = false;
+	cleanup = [];
 	if (ischar(args.file))
 		filename = args.file;
-		f = fopen(filename);
-		filelocal = true;
+		[f, fmsg] = fopen(filename);
+		if (f == -1)
+			error("read_starlab: Error reading %s: %s", filename, fmsg);
+		endif
+		cleanup = onCleanup(@() fclose(f));
 	elseif (is_valid_file_id(args.file))
 		filename = "stream";
 		f = args.file;
@@ -92,10 +95,6 @@ function [data, D] = read_starlab(varargin)
 		channels += 1;
 	catch err
 		error("Wrong file format in %s: %s", filename, err);
-		if (filelocal)
-			fclose(f);
-			return
-		end
 	end
 	if (feof(f))
 		## No data after header
@@ -105,10 +104,6 @@ function [data, D] = read_starlab(varargin)
 		data = dlmread(f, "emptyvalue", args.emptyvalue);
 		data = data(:,1:channels+1);
 	end
-
-	if (filelocal)
-		fclose(f);
-	endif
 endfunction
 
 ## Tests are in the project's 'test' directory
