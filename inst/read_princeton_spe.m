@@ -75,6 +75,8 @@ function [img, D] = read_princeton_spe(file)
 		filename = "stream";
 		f = file;
 	end
+	[~, name, ext] = fileparts(filename);
+	basename = [name ext];
 
 	## Parse header (most values may be empty in SPE 3.x)
 	D = struct();
