@@ -1,6 +1,6 @@
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{D} =} read_starlab (@var{file})
-## @deftypefnx {} {@var{D} =} read_starlab @
+## @deftypefn  {} {[@var{data}, @var{meta}] =} read_starlab (@var{file})
+## @deftypefnx {} {[@var{data}, @var{meta}] =} read_starlab @
 ##   (@dots{}, @qcode{"emptyvalue"}, @var{value})
 ##
 ## Read data from @var{file} in the format produced by the
@@ -8,7 +8,7 @@
 ##
 ## @var{file} is a path to the file to be read.
 ## The expected format is 34 header lines starting with @code{;}
-## and a data header followed by whitespace-separated data.
+## and a data header followed by whitespace-separated numeric data.
 ## The first column is interpreted as time, the second as signal intensity.
 ##
 ## This is an example header:
@@ -54,17 +54,10 @@
 ## The @qcode{"emptyvalue"} option specifies the value used to fill
 ## non-numeric fields in data like @code{Over}. The default is @code{nan}.
 ##
-## The return value @var{D} is a struct with the following fields:
-##
-## @table @code
-## @item t
-## Timestamps.
-##
-## @item in
-## Signal intensity.
-## @end table
+## The second return value @var{meta} is a struct with the metadata
+## read from the file header.
 ## @end deftypefn
-function D = read_starlab(varargin)
+function [data, D] = read_starlab(varargin)
 	p = inputParser;
 	p.addRequired("file");
 	p.addParameter("emptyvalue", nan);
@@ -82,6 +75,7 @@ function D = read_starlab(varargin)
 	end
 
 	D = struct();
+	channels = 0;
 	try
 		assert(startsWith(fgetl(f), ";PC Software:StarLab Version"));
 		fskipl(f, 9);
@@ -95,6 +89,7 @@ function D = read_starlab(varargin)
 		fscanf(f, ";Units:");
 		D.units = fgetl(f);
 		fskipl(f, 19);
+		channels += 1;
 	catch err
 		error("Wrong file format in %s: %s", filename, err);
 		if (filelocal)
@@ -105,12 +100,10 @@ function D = read_starlab(varargin)
 	if (feof(f))
 		## No data after header
 		warning("No data in %s", filename);
-		D.t = [];
-		D.in = [];
+		data = [];
 	else
 		data = dlmread(f, "emptyvalue", args.emptyvalue);
-		D.t = data(:,1);
-		D.in = data(:,2);
+		data = data(:,1:channels+1);
 	end
 
 	if (filelocal)
