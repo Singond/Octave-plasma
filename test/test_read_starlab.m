@@ -12,6 +12,9 @@
 %! d = read_starlab("data/starlab/no-data.txt");
 %! assert(d, []);
 
+%!error <Bad file header in>
+%! d = read_starlab("test_read_starlab.m");
+
 %!test
 %! d = read_starlab("data/starlab/overrange.txt");
 %! assert(size(d), [8760, 2]);

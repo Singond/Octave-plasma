@@ -76,7 +76,10 @@ function [data, D] = read_starlab(varargin)
 		filename = "stream";
 		f = args.file;
 	end
+	[~, name, ext] = fileparts(filename);
+	basename = [name ext];
 
+	## Parse header
 	D = struct();
 	channels = 0;
 	try
@@ -94,11 +97,16 @@ function [data, D] = read_starlab(varargin)
 		fskipl(f, 19);
 		channels += 1;
 	catch err
-		error("Wrong file format in %s: %s", filename, err);
+		err.message = sprintf(
+			"read_starlab: Bad file header in %s: %s",
+			basename, err.message);
+		rethrow(err);
 	end
+
+	## Read data
 	if (feof(f))
 		## No data after header
-		warning("No data in %s", filename);
+		warning("read_starlab: No data in %s", basename);
 		data = [];
 	else
 		data = dlmread(f, "emptyvalue", args.emptyvalue);
