@@ -68,7 +68,9 @@ help:
 	@echo "   dist    - Create $(release_tarball) for release."
 	@echo "   html    - Create $(html_tarball) for release."
 	@echo "   release - Create both of the above and show md5sums."
-	@echo "   install - Install the package in $(installation_dir), where it is not visible in a normal Octave session."
+	@echo "   testinstall"
+	@echo "           - Install the package in $(installation_dir), where it is not visible in a normal Octave session."
+	@echo "   install - Install the package into a normal Octave session."
 	@echo "   check   - Execute package tests."
 	@echo "   doctest - Test the help texts with the doctest package."
 	@echo "   run     - Run Octave with the package installed in $(installation_dir) in the path."
@@ -160,7 +162,7 @@ clean-unpacked-release:
 ## Recipes for installing the package.
 ##
 
-.PHONY: install clean-install
+.PHONY: testinstall install clean-install
 
 octave_install_commands = \
 ' llist_path = pkg ("local_list"); \
@@ -174,7 +176,7 @@ octave_install_commands = \
 
 ## Install unconditionally. Maybe useful for testing installation with
 ## different versions of Octave.
-install: $(release_tarball)
+testinstall: $(release_tarball)
 	@echo "Installing package under $(installation_dir) ..."
 	$(OCTAVE) --eval $(octave_install_commands)
 	touch $(install_stamp)
@@ -190,6 +192,9 @@ clean-install:
 	-$(RM) -r $(installation_dir)
 	@echo
 
+install: $(release_tarball)
+	@echo "Installing package..."
+	$(OCTAVE:--norc=) --eval 'pkg install "$(release_tarball)"'
 
 ##
 ## Recipes for testing purposes
