@@ -26,6 +26,13 @@
 ##
 ## @item version
 ## Version of the SPE file format.
+##
+## @item accum
+## Number of on-chip accumulations.
+##
+## @item readouttime
+## Experiment readout time in seconds.
+## (Note that in the file, the time is stored in milliseconds.)
 ## @end table
 ##
 ## Note that there are several versions of the SPE format,
@@ -87,6 +94,8 @@ function [img, D] = read_princeton_spe(file)
 		D.xdim = fread(f, 1, "uint16");
 		fseek(f, 108);
 		dt = fread(f, 1, "int16");
+		fseek(f, 112);
+		D.accum = fread(f, 1, "uint16");
 		switch (dt)
 			case 0
 				datatype = "float32";
@@ -109,6 +118,9 @@ function [img, D] = read_princeton_spe(file)
 		D.datatype = datatype;
 		fseek(f, 656);
 		D.ydim = fread(f, 1, "uint16");
+		fseek(f, 672);
+		D.readouttime = fread(f, 1, "float32");
+		D.readouttime *= 1e-3;  # To seconds
 		fseek(f, 678);
 		D.footeroffset = fread(f, 1, "uint64");
 		fseek(f, 1446);
