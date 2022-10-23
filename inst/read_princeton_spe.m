@@ -27,6 +27,12 @@
 ## @item version
 ## Version of the SPE file format.
 ##
+## @item datestr
+## Date of measurement as string.
+## This is the raw string as stored in the file with leading and trailing
+## whitespace removed.
+## Apparently, the format is always @qcode{"08Jul2004"}.
+##
 ## @item accum
 ## Number of on-chip accumulations.
 ##
@@ -89,7 +95,8 @@ function [img, D] = read_princeton_spe(file)
 	D = struct();
 	try
 		fseek(f, 20);
-		D.date = fread(f, 10, "int8");
+		date = fread(f, 10, "int8");
+		D.datestr = deblank(char(date'));
 		fseek(f, 42);
 		D.xdim = fread(f, 1, "uint16");
 		fseek(f, 108);
