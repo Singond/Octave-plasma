@@ -1,5 +1,6 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {[@var{img}, @var{meta}] =} read_princeton_spe (@var{file})
+## @deftypefnx {} {[~, @var{meta}] =} read_princeton_spe (@dots{})
 ##
 ## Read data in binary SPE format produced by @emph{Princeton Instruments}
 ## software.
@@ -40,6 +41,9 @@
 ## Experiment readout time in seconds.
 ## (Note that in the file, the time is stored in milliseconds.)
 ## @end table
+##
+## If the first output value is ignored (see the last form),
+## only the metadata is read and the rest of the file is skipped.
 ##
 ## Note that there are several versions of the SPE format,
 ## only some of which are supported by this function:
@@ -139,6 +143,11 @@ function [img, D] = read_princeton_spe(file)
 			"read_princeton_spe: Bad SPE header in %s: %s",
 			basename, err.message);
 		rethrow(err);
+	end
+
+	## Do not read image data if the return value is not requested
+	if (!isargout(1))
+		return;
 	end
 
 	## Read data
