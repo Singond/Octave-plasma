@@ -150,15 +150,16 @@ function [img, D] = read_princeton_spe(file)
 		return;
 	end
 
-	## Read data
+	## Read data.
+	## Data is in row-major order, Octave expects column-major.
+	## Transpose each frame to fix this.
 	if (D.version < 3)
 		fseek(f, 4100);
-		data = fread(f, Inf, datatype);
-		data = reshape(data, D.xdim, D.ydim, []);
-		if (size(data, 3) != D.numframes)
-			error("read_princeton_spe: Expected %d frames, found %d.",
-				D.numframes, size(data, 3));
-		endif
+		framesize = D.xdim * D.ydim;
+		data = zeros(D.ydim, D.xdim, D.numframes);
+		for k = 1:D.numframes
+			data(:,:,k) = fread(f, [D.xdim D.ydim], datatype)';
+		end
 	elseif (D.xdim > 0 && D.ydim > 0 && D.numframes > 0)
 		assert(D.footeroffset != 0);
 		warning("read_princeton_spe: Reading SPE 3.x in compatibility mode. Errors may occur.\n");
@@ -176,11 +177,10 @@ function [img, D] = read_princeton_spe(file)
 			skip = 0;
 		endif
 
-		data = zeros(D.xdim, D.ydim, D.numframes);
+		data = zeros(D.ydim, D.xdim, D.numframes);
 		fseek(f, 4100);
 		for k = 1:D.numframes
-			data(:,:,k) = reshape(fread(f, framesize, datatype),
-				D.xdim, D.ydim);
+			data(:,:,k) = fread(f, [D.xdim D.ydim], datatype)';
 			fseek(f, skip, SEEK_CUR);
 		endfor
 	else
@@ -188,9 +188,7 @@ function [img, D] = read_princeton_spe(file)
 		## which is not implemented in Octave.
 		error("read_princeton_spe: Reading SPE 3.x not implemented yet.");
 	end
-	## Data is in row-major order, Octave expects column-major.
-	## Switch first two dimensions to fix this.
-	img = permute(data, [2 1 3]);
+	img = data;
 end
 
 %!error <Error reading>
