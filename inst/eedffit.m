@@ -44,7 +44,7 @@ function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 	end_try_catch
 
 	## Fit Druyvesteyn distribution (linearized)
-	## f(E) = a * sqrt(E) * exp((-E/b)^2)
+	## f(E) = a * sqrt(E) * exp(-(E/b)^2)
 	beta = ols(log(f) - log(E)/2, [ones(size(E)) E.^2]);
 	drl = struct();
 	drl.beta = beta;
@@ -54,7 +54,7 @@ function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 	drl.T = drl.b * elemcharge / boltzmann;
 
 	## Fit Druyvesteyn distribution non-linearly
-	## f(E) = a * sqrt(E) * exp((-E/b)^2)
+	## f(E) = a * sqrt(E) * exp(-(E/b)^2)
 	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-(E./beta(2)).^2);
 	beta0 = [drl.a 10000 * boltzmann / elemcharge];
 	opts.bounds = [
@@ -82,7 +82,7 @@ function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 	end_try_catch
 
 	## Fit general distribution
-	## f(E) = a * sqrt(E) * exp((-E/b)^c)
+	## f(E) = a * sqrt(E) * exp(-(E/b)^c)
 	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-(E./beta(2)).^beta(3));
 	beta0 = [drl.a drl.b 2];
 	opts.bounds = [
