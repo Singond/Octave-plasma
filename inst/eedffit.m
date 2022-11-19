@@ -1,6 +1,5 @@
 function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 	pkg load optim;
-	pkg load singon-ext;
 
 	persistent elemcharge = 1.602177e-19;    # Elementary charge [C]
 	persistent boltzmann = 1.380649e-23;     # Boltzmann constant [J/K]
