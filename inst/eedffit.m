@@ -158,6 +158,9 @@ function F = fit_gen(E, f, beta0, c)
 	endif
 endfunction
 
+%!# The 'clear -g verbose' inside the tests is used to silence warnings
+%!# about a global variable leaked by the 'leasqr' function.
+
 %!shared known_noise
 %! rand("seed", 8);
 %! known_noise = (rand(200, 1) - 0.5);
@@ -173,6 +176,7 @@ endfunction
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-E ./ b) + 0.4 * noise;
 %! [mbl, mb, ~, ~, gen] = eedffit(E, f);
+%! clear -g verbose;
 %! assert(mbl.a,     a, 0.8);
 %! assert(mbl.b,     b, 0.6);
 %! assert(mb.a,      a, 0.1);
@@ -190,6 +194,7 @@ endfunction
 %! b = 4;
 %! f = (a) .* sqrt(E) .* exp(-E ./ b) + 0.4 * known_noise;
 %! [mbl, mb, ~, ~, gen] = eedffit(E, f);
+%! clear -g verbose;
 %! assert(mbl.a,     6.9084, 1e-4);
 %! assert(mbl.b,     4.0096, 1e-4);
 %! assert(mb.a,      7.0034, 1e-4);
@@ -208,6 +213,7 @@ endfunction
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^2) + 0.01 * noise;
 %! [~, ~, drl, dr, gen] = eedffit(E, f);
+%! clear -g verbose;
 %! assert(drl.a,     a, 0.02);
 %! assert(drl.b,     b, 0.01);
 %! assert(dr.a,      a, 0.001);
@@ -225,6 +231,7 @@ endfunction
 %! b = 8;
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^2) + 0.01 * known_noise;
 %! [~, ~, drl, dr, gen] = eedffit(E, f);
+%! clear -g verbose;
 %! assert(drl.a,     6.9861, 1e-4);
 %! assert(drl.b,     8.0061, 1e-4);
 %! assert(dr.a,      7.0001, 1e-4);
@@ -244,6 +251,7 @@ endfunction
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^k) + 0.4 * noise;
 %! [~, ~, ~, ~, gen] = eedffit(E, f);
+%! clear -g verbose;
 %! assert(gen.a,     a, 0.04);
 %! assert(gen.b,     b, 0.03);
 %! assert(gen.kappa, k, 0.03);
@@ -258,6 +266,7 @@ endfunction
 %! k = 2.6;
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^k) + 0.4 * known_noise;
 %! [~, ~, ~, ~, gen] = eedffit(E, f);
+%! clear -g verbose;
 %! assert(gen.a,      7.0029, 1e-4);
 %! assert(gen.b,     11.9914, 1e-4);
 %! assert(gen.kappa,  2.5977, 1e-4);
