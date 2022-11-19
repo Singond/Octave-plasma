@@ -4,110 +4,158 @@ function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 
 	persistent elemcharge = 1.602177e-19;    # Elementary charge [C]
 	persistent boltzmann = 1.380649e-23;     # Boltzmann constant [J/K]
+	c = struct();
+	c.Tscale = elemcharge / boltzmann;
 
 	## Fit Maxwell-Boltzmann distribution (linearized)
-	## f(E) = a * sqrt(E) * exp(-E/b)
-	beta = ols(log(f) - log(E)/2, [ones(size(E)) E]);
-	mbl = struct();
-	mbl.beta = beta;
-	mbl.a = exp(beta(1));
-	mbl.b = -1/beta(2);
-	mbl.f = @(E) exp(beta(1) + beta(2).*E) .* sqrt(E);
-	mbl.T = mbl.b * elemcharge / boltzmann;
+	if (isargout(1) || isargout(2))
+		mbl = fit_mb_lin(E, f, c);
+	endif
 
 	## Fit Maxwell-Boltzmann distribution non-linearly
-	## f(E) = a * sqrt(E) * exp(-E/b)
-	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-E./beta(2));
-	beta0 = [mbl.a 10000 * boltzmann / elemcharge];
-	opts.bounds = [
-		0 Inf
-		0 Inf
-	];
-	try
-		[fm, beta, cvg, iter, ~, covp] = leasqr(E, f,
-			beta0, model, [], [], [], [], [], opts);
-		mbnl.beta = beta;
-		mbnl.f = @(E) model(E, beta);
-		mbnl.a = beta(1);
-		mbnl.b = beta(2);
-		mbnl.T = mbnl.b * elemcharge / boltzmann;
-		if (!cvg)
-			warning("Maxwell-Boltzmann fit did not converge");
-		elseif (iter == 1)
-			warning("Maxwell-Boltzmann fit stopped after first iteration");
-		endif
-		mb = mbnl;
-	catch err
-		warning(["Failed to fit Maxwell-Boltzmann distribution: " err.message]);
-		warning("Falling back to linearized fit");
-		mb = mbl;
-	end_try_catch
+	if (isargout(2))
+		try
+			beta0 = [mbl.a 10000 / c.Tscale];
+			mb = fit_mb(E, f, beta0, c);
+		catch err
+			warning(["Failed to fit Maxwell-Boltzmann distribution: " err.message]);
+			warning("Falling back to linearized fit");
+			mb = mbl;
+		end_try_catch
+	endif
 
 	## Fit Druyvesteyn distribution (linearized)
-	## f(E) = a * sqrt(E) * exp(-(E/b)^2)
-	beta = ols(log(f) - log(E)/2, [ones(size(E)) E.^2]);
-	drl = struct();
-	drl.beta = beta;
-	drl.a = exp(beta(1));
-	drl.b = 1/sqrt(abs(beta(2)));  # XXX
-	drl.f = @(E) exp(beta(1) + beta(2).*E.^2) .* sqrt(E);
-	drl.T = drl.b * elemcharge / boltzmann;
+	if (isargout(3) || isargout(4) || isargout(5))
+		drl = fit_dr_lin(E, f, c);
+	endif
 
 	## Fit Druyvesteyn distribution non-linearly
-	## f(E) = a * sqrt(E) * exp(-(E/b)^2)
-	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-(E./beta(2)).^2);
-	beta0 = [drl.a 10000 * boltzmann / elemcharge];
-	opts.bounds = [
-		0 Inf
-		0 Inf
-	];
-	try
-		[fm, beta, cvg, iter, ~, covp] = leasqr(E, f,
-			beta0, model, [], [], [], [], [], opts);
-		drnl.beta = beta;
-		drnl.f = @(E) model(E, beta);
-		drnl.a = beta(1);
-		drnl.b = beta(2);
-		drnl.T = drnl.b * elemcharge / boltzmann;
-		if (!cvg)
-			warning("Druyvesteyn fit did not converge");
-		elseif (iter == 1)
-			warning("Druyvesteyn fit stopped after first iteration");
-		endif
-		dr = drnl;
-	catch err
-		warning(["Failed to fit Druyvesteyn distribution: " err.message]);
-		warning("Falling back to linearized fit");
-		dr = drl;
-	end_try_catch
+	if (isargout(4))
+		try
+			beta0 = [drl.a 10000 / c.Tscale];
+			dr = fit_dr(E, f, beta0, c);
+		catch err
+			warning(["Failed to fit Druyvesteyn distribution: " err.message]);
+			warning("Falling back to linearized fit");
+			dr = drl;
+		end_try_catch
+	endif
 
 	## Fit general distribution
 	## f(E) = a * sqrt(E) * exp(-(E/b)^c)
+	if (isargout(5))
+		try
+			beta0 = [drl.a drl.b 2];
+			gen = fit_gen(E, f, beta0, c);
+		catch err
+			warning(["Failed to fit general distribution: " err.message]);
+		end_try_catch
+	endif
+endfunction
+
+## Fit Maxwell-Boltzmann distribution (linearized).
+## f(E) = a * sqrt(E) * exp(-E/b)
+function F = fit_mb_lin(E, f, c)
+	beta = ols(log(f) - log(E)/2, [ones(size(E)) E]);
+	F = struct();
+	F.beta = beta;
+	F.a = exp(beta(1));
+	F.b = -1/beta(2);
+	F.f = @(E) exp(beta(1) + beta(2).*E) .* sqrt(E);
+	F.T = F.b * c.Tscale;
+endfunction
+
+## Fit Maxwell-Boltzmann distribution non-linearly.
+## f(E) = a * sqrt(E) * exp(-E/b)
+function F = fit_mb(E, f, beta0, c)
+	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-E./beta(2));
+	opts.bounds = [
+		0 Inf
+		0 Inf
+	];
+
+	[fm, beta, cvg, iter, ~, covp] = leasqr(E, f,
+		beta0, model, [], [], [], [], [], opts);
+
+	F = struct();
+	F.beta = beta;
+	F.f = @(E) model(E, beta);
+	F.a = beta(1);
+	F.b = beta(2);
+	F.T = F.b * c.Tscale;
+
+	if (!cvg)
+		warning("Maxwell-Boltzmann fit did not converge");
+	elseif (iter == 1)
+		warning("Maxwell-Boltzmann fit stopped after first iteration");
+	endif
+endfunction
+
+## Fit Druyvesteyn distribution (linearized).
+## f(E) = a * sqrt(E) * exp(-(E/b)^2)
+function F = fit_dr_lin(E, f, c)
+	beta = ols(log(f) - log(E)/2, [ones(size(E)) E.^2]);
+	F = struct();
+	F.beta = beta;
+	F.a = exp(beta(1));
+	F.b = 1/sqrt(abs(beta(2)));  # XXX
+	F.f = @(E) exp(beta(1) + beta(2).*E.^2) .* sqrt(E);
+	F.T = F.b * c.Tscale;
+endfunction
+
+## Fit Druyvesteyn distribution non-linearly.
+## f(E) = a * sqrt(E) * exp(-(E/b)^2)
+function F = fit_dr(E, f, beta0, c)
+	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-(E./beta(2)).^2);
+	opts.bounds = [
+		0 Inf
+		0 Inf
+	];
+
+	[fm, beta, cvg, iter, ~, covp] = leasqr(E, f,
+		beta0, model, [], [], [], [], [], opts);
+
+	F = struct();
+	F.beta = beta;
+	F.f = @(E) model(E, beta);
+	F.a = beta(1);
+	F.b = beta(2);
+	F.T = F.b * c.Tscale;
+
+	if (!cvg)
+		warning("Druyvesteyn fit did not converge");
+	elseif (iter == 1)
+		warning("Druyvesteyn fit stopped after first iteration");
+	endif
+endfunction
+
+## Fit generalized distribution.
+## f(E) = a * sqrt(E) * exp(-(E/b)^c)
+function F = fit_gen(E, f, beta0, c)
 	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-(E./beta(2)).^beta(3));
-	beta0 = [drl.a drl.b 2];
 	opts.bounds = [
 		0 Inf
 		0 Inf
 		0 Inf
 	];
-	try
-		[fm, beta, cvg, iter, ~, covp] = leasqr(E, f,
-			beta0, model, [], [], [], [], [], opts);
-		gen.beta = beta;
-		gen.f = @(E) model(E, beta);
-		gen.a = beta(1);
-		gen.b = beta(2);
-		gen.c = beta(3);
-		gen.T = gen.b * elemcharge / boltzmann;
-		gen.kappa = gen.c;
-		if (!cvg)
-			warning("General fit did not converge");
-		elseif (iter == 1)
-			warning("General fit stopped after first iteration");
-		endif
-	catch err
-		warning(["Failed to fit general distribution: " err.message]);
-	end_try_catch
+
+	[fm, beta, cvg, iter, ~, covp] = leasqr(E, f,
+		beta0, model, [], [], [], [], [], opts);
+
+	F = struct();
+	F.beta = beta;
+	F.f = @(E) model(E, beta);
+	F.a = beta(1);
+	F.b = beta(2);
+	F.c = beta(3);
+	F.T = F.b * c.Tscale;
+	F.kappa = F.c;
+
+	if (!cvg)
+		warning("General fit did not converge");
+	elseif (iter == 1)
+		warning("General fit stopped after first iteration");
+	endif
 endfunction
 
 %!shared known_noise
