@@ -184,6 +184,9 @@ endfunction
 %! assert(gen.a,     a, 0.3);
 %! assert(gen.b,     b, 0.2);
 %! assert(gen.kappa, 1, 0.03);
+%! assert(mbl.f(E),  mbl.a .* sqrt(E) .* exp(-E/mbl.b), 1e-14);
+%! assert(mb.f(E),   mb.a  .* sqrt(E) .* exp(-E/mb.b),  1e-14);
+%! assert(gen.f(E),  gen.a .* sqrt(E) .* exp(-(E/gen.b) .^ gen.kappa), 1e-14);
 
 %!test
 %! # Maxwell-Boltzmann distribution with given noise
@@ -221,6 +224,9 @@ endfunction
 %! assert(gen.a,     a, 0.002);
 %! assert(gen.b,     b, 0.002);
 %! assert(gen.kappa, 2, 0.001);
+%! assert(drl.f(E),  drl.a .* sqrt(E) .* exp(-(E/drl.b) .^ 2), 1e-14);
+%! assert(dr.f(E),   dr.a  .* sqrt(E) .* exp(-(E/dr.b)  .^ 2), 1e-14);
+%! assert(gen.f(E),  gen.a .* sqrt(E) .* exp(-(E/gen.b) .^ gen.kappa), 1e-14);
 
 %!test
 %! # Druyvesteyn distribution with given noise
@@ -270,3 +276,4 @@ endfunction
 %! assert(gen.a,      7.0029, 1e-4);
 %! assert(gen.b,     11.9914, 1e-4);
 %! assert(gen.kappa,  2.5977, 1e-4);
+%! assert(gen.f(E),  gen.a .* sqrt(E) .* exp(-(E/gen.b) .^ gen.kappa), 1e-14);
