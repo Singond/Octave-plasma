@@ -55,12 +55,12 @@ endfunction
 ## Fit Maxwell-Boltzmann distribution (linearized).
 ## f(E) = a * sqrt(E) * exp(-E/b)
 function F = fit_mb_lin(E, f, c)
-	beta = ols(log(f) - log(E)/2, [ones(size(E)) E]);
+	beta = polyfit(E, log(f) - log(E)/2, 1);
 	F = struct();
 	F.beta = beta;
-	F.a = exp(beta(1));
-	F.b = -1/beta(2);
-	F.f = @(E) exp(beta(1) + beta(2).*E) .* sqrt(E);
+	F.a = exp(beta(2));
+	F.b = -1 / beta(1);
+	F.f = @(E) exp(beta(1) .* E + beta(2)) .* sqrt(E);
 	F.T = F.b * c.Tscale;
 endfunction
 
@@ -93,12 +93,12 @@ endfunction
 ## Fit Druyvesteyn distribution (linearized).
 ## f(E) = a * sqrt(E) * exp(-(E/b)^2)
 function F = fit_dr_lin(E, f, c)
-	beta = ols(log(f) - log(E)/2, [ones(size(E)) E.^2]);
+	beta = polyfit(E, log(f) - log(E)/2, logical([1 0 1]));
 	F = struct();
 	F.beta = beta;
-	F.a = exp(beta(1));
-	F.b = 1/sqrt(abs(beta(2)));  # XXX
-	F.f = @(E) exp(beta(1) + beta(2).*E.^2) .* sqrt(E);
+	F.a = exp(beta(3));
+	F.b = 1 / sqrt(abs(beta(1)));  # XXX
+	F.f = @(E) exp(beta(1) .* E.^2 + beta(3)) .* sqrt(E);
 	F.T = F.b * c.Tscale;
 endfunction
 
