@@ -1,4 +1,4 @@
-function [mbl, mb, drl, dr, gen] = eedffit(E, f)
+function [mb, dr, gen] = eedffit(E, f)
 	pkg load optim;
 
 	persistent elemcharge = 1.602177e-19;    # Elementary charge [C]
@@ -6,13 +6,9 @@ function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 	c = struct();
 	c.Tscale = elemcharge / boltzmann;
 
-	## Fit Maxwell-Boltzmann distribution (linearized)
-	if (isargout(1) || isargout(2))
+	## Fit Maxwell-Boltzmann distribution
+	if (isargout(1))
 		mbl = fit_mb_lin(E, f, c);
-	endif
-
-	## Fit Maxwell-Boltzmann distribution non-linearly
-	if (isargout(2))
 		try
 			beta0 = [mbl.a 10000 / c.Tscale];
 			mb = fit_mb(E, f, beta0, c);
@@ -23,13 +19,9 @@ function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 		end_try_catch
 	endif
 
-	## Fit Druyvesteyn distribution (linearized)
-	if (isargout(3) || isargout(4) || isargout(5))
+	## Fit Druyvesteyn distribution
+	if (isargout(2) || isargout(3))
 		drl = fit_dr_lin(E, f, c);
-	endif
-
-	## Fit Druyvesteyn distribution non-linearly
-	if (isargout(4))
 		try
 			beta0 = [drl.a 10000 / c.Tscale];
 			dr = fit_dr(E, f, beta0, c);
@@ -40,9 +32,8 @@ function [mbl, mb, drl, dr, gen] = eedffit(E, f)
 		end_try_catch
 	endif
 
-	## Fit general distribution
-	## f(E) = a * sqrt(E) * exp(-(E/b)^c)
-	if (isargout(5))
+	## Fit generalized distribution
+	if (isargout(3))
 		try
 			beta0 = [drl.a drl.b 2];
 			gen = fit_gen(E, f, beta0, c);
@@ -174,16 +165,16 @@ endfunction
 %! b = 4;
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-E ./ b) + 0.4 * noise;
-%! [mbl, mb, ~, ~, gen] = eedffit(E, f);
+%! [mb, ~, gen] = eedffit(E, f);
 %! clear -g verbose;
-%! assert(mbl.a,     a, 0.8);
-%! assert(mbl.b,     b, 0.6);
+%! # assert(mbl.a,     a, 0.8);
+%! # assert(mbl.b,     b, 0.6);
 %! assert(mb.a,      a, 0.1);
 %! assert(mb.b,      b, 0.1);
 %! assert(gen.a,     a, 0.3);
 %! assert(gen.b,     b, 0.2);
 %! assert(gen.kappa, 1, 0.03);
-%! assert(mbl.f(E),  mbl.a .* sqrt(E) .* exp(-E/mbl.b), 1e-14);
+%! # assert(mbl.f(E),  mbl.a .* sqrt(E) .* exp(-E/mbl.b), 1e-14);
 %! assert(mb.f(E),   mb.a  .* sqrt(E) .* exp(-E/mb.b),  1e-14);
 %! assert(gen.f(E),  gen.a .* sqrt(E) .* exp(-(E/gen.b) .^ gen.kappa), 1e-14);
 
@@ -195,10 +186,10 @@ endfunction
 %! a = 7;
 %! b = 4;
 %! f = (a) .* sqrt(E) .* exp(-E ./ b) + 0.4 * known_noise;
-%! [mbl, mb, ~, ~, gen] = eedffit(E, f);
+%! [mb, ~, gen] = eedffit(E, f);
 %! clear -g verbose;
-%! assert(mbl.a,     6.9084, 1e-4);
-%! assert(mbl.b,     4.0096, 1e-4);
+%! # assert(mbl.a,     6.9084, 1e-4);
+%! # assert(mbl.b,     4.0096, 1e-4);
 %! assert(mb.a,      7.0034, 1e-4);
 %! assert(mb.b,      3.9946, 1e-4);
 %! assert(gen.a,     6.9476, 1e-4);
@@ -214,16 +205,16 @@ endfunction
 %! b = 8;
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^2) + 0.01 * noise;
-%! [~, ~, drl, dr, gen] = eedffit(E, f);
+%! [~, dr, gen] = eedffit(E, f);
 %! clear -g verbose;
-%! assert(drl.a,     a, 0.02);
-%! assert(drl.b,     b, 0.01);
+%! # assert(drl.a,     a, 0.02);
+%! # assert(drl.b,     b, 0.01);
 %! assert(dr.a,      a, 0.001);
 %! assert(dr.b,      b, 0.001);
 %! assert(gen.a,     a, 0.002);
 %! assert(gen.b,     b, 0.002);
 %! assert(gen.kappa, 2, 0.001);
-%! assert(drl.f(E),  drl.a .* sqrt(E) .* exp(-(E/drl.b) .^ 2), 1e-14);
+%! # assert(drl.f(E),  drl.a .* sqrt(E) .* exp(-(E/drl.b) .^ 2), 1e-14);
 %! assert(dr.f(E),   dr.a  .* sqrt(E) .* exp(-(E/dr.b)  .^ 2), 1e-14);
 %! assert(gen.f(E),  gen.a .* sqrt(E) .* exp(-(E/gen.b) .^ gen.kappa), 1e-14);
 
@@ -235,10 +226,10 @@ endfunction
 %! a = 7;
 %! b = 8;
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^2) + 0.01 * known_noise;
-%! [~, ~, drl, dr, gen] = eedffit(E, f);
+%! [~, dr, gen] = eedffit(E, f);
 %! clear -g verbose;
-%! assert(drl.a,     6.9861, 1e-4);
-%! assert(drl.b,     8.0061, 1e-4);
+%! # assert(drl.a,     6.9861, 1e-4);
+%! # assert(drl.b,     8.0061, 1e-4);
 %! assert(dr.a,      7.0001, 1e-4);
 %! assert(dr.b,      7.9998, 1e-4);
 %! assert(gen.a,     6.9999, 1e-4);
@@ -255,7 +246,7 @@ endfunction
 %! k = 2.6;
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^k) + 0.4 * noise;
-%! [~, ~, ~, ~, gen] = eedffit(E, f);
+%! [~, ~, gen] = eedffit(E, f);
 %! clear -g verbose;
 %! assert(gen.a,     a, 0.04);
 %! assert(gen.b,     b, 0.03);
@@ -270,7 +261,7 @@ endfunction
 %! b = 12;
 %! k = 2.6;
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^k) + 0.4 * known_noise;
-%! [~, ~, ~, ~, gen] = eedffit(E, f);
+%! [~, ~, gen] = eedffit(E, f);
 %! clear -g verbose;
 %! assert(gen.a,      7.0029, 1e-4);
 %! assert(gen.b,     11.9914, 1e-4);
