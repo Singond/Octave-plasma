@@ -1,3 +1,66 @@
+## -*- texinfo -*-
+## @deftypefn  {} {[@var{mb}, @var{dr}, @var{gen}] =} eedffit (@var{E}, @var{f})
+##
+## Fit common shapes of electron energy distribution function (EEDF) to data.
+##
+## Data is given as the vector of electron energies @var{E} and the vector
+## of corresponding values of the distribution function @var{f}.
+##
+## Each return value corresponds to a fit of a single shape.
+##
+## @table @var
+## @item mb
+## The Maxwell-Boltzmann distribution of the form:
+##
+## @displaymath
+##     f(@var{E}) = @var{a} * sqrt(@var{E}) * exp(-@var{E} / @var{b})
+## @end displaymath
+##
+## where @var{a} and @var{b} are the fitted parameters.
+##
+## @item dr
+## The Druyvesteyn distribution of the form:
+##
+## @displaymath
+##     f(@var{E}) = @var{a} * sqrt(@var{E}) * exp(-(@var{E} / @var{b})^2)
+## @end displaymath
+##
+## where @var{a} and @var{b} are again the fitted parameters.
+##
+## @item gen
+## A generalized distribution of the form:
+##
+## @displaymath
+##     f(@var{E}) = @var{a} * sqrt(@var{E}) * exp(-(@var{E} / @var{b})^@var{kappa})
+## @end displaymath
+##
+## which, in addition to @var{a} and @var{b}, fits a third parameter,
+## the exponent @var{kappa}.
+## @end table
+##
+## Each of the return values is a struct containing the parameters listed
+## above as fields and some additional fields:
+##
+## @table @code
+## @item f
+## The fitted distribution function @code{f(E)}.
+## This is a function handle taking a single parameter, the energy @var{E}.
+##
+## @item T
+## Electron temperature @var{T} calculated from the fitted parameters.
+## For all fitted shapes, this is the value
+##
+## @displaymath
+##     @var{T} = @var{b} * @var{e} / @var{k}
+## @end displaymath
+##
+## where @var{b} is the fitted parameter,
+## @var{e} is the elementary charge in coulombs
+## and @var{k} is the Boltzmann constant in joules per kelvin.
+## @end table
+## @end deftypefn
+
+## Author: Jan Slany <singond@seznam.cz>
 function [mb, dr, gen] = eedffit(E, f)
 	pkg load optim;
 
