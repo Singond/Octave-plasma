@@ -1,13 +1,14 @@
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{S} =} read_fhr1000(@var{file})
+## @deftypefn  {} {[@var{data}, @var{meta}] =} read_fhr1000(@var{file})
+## @deftypefnx {} {@var{S} =} read_fhr1000(@dots{}, @qcode{"Spectrum"})
+##
 ## Read spectrum from @var{file} in the file format produced
 ## by the @emph{Horiba FHR 1000} spectrometer.
 ##
 ## @var{file} is a path to the file to be read.
 ## The expected format is 29 header lines starting with @code{#}
-## followed by tab-separated data in two columns.
-## The first column is interpreted as wavelengths in nanometres,
-## the second as spectral intensity in arbitrary units.
+## followed by tab-separated data in two columns, which is returned
+## in the matrix @var{data}.
 ##
 ## This is an example header:
 ##
@@ -43,35 +44,45 @@
 ##   #Acquired=	10.12.2019 10:16:02
 ## @end verbatim
 ##
-## The return value @var{S} is a @code{Spectrum} object with the wavelengths
-## in nanometres and the spectral intensity in arbitrary units.
+## The optional return value @var{meta} is a struct with metadata read
+## from the file header.
+##
+## If called with the @qcode{"Spectrum"} switch,
+## return a @code{Spectrum} object containing the wavelengths
+## and spectral intensity  as well as the header data.
 ## @end deftypefn
-function S = read_fhr1000(filename)
+function varargout = read_fhr1000(filename, varargin)
 	f = fopen(filename, "r");
 
 	## Parse the header
-	acqtime = sscanf(fgetl(f), "#Acq. time (s)= %f");
-	accumulations = sscanf(fgetl(f), "#Accumulations= %u");
+	D.acqtime = sscanf(fgetl(f), "#Acq. time (s)= %f");
+	D.accumulations = sscanf(fgetl(f), "#Accumulations= %u");
 	fskipl(f, 13);
-	temperature = sscanf(fgetl(f), "#Detector temperature (%*cC)= %f");
+	D.temperature = sscanf(fgetl(f), "#Detector temperature (%*cC)= %f");
 	fskipl(f, 2);
-	grating = sscanf(fgetl(f), "#Grating= %s");
+	D.grating = sscanf(fgetl(f), "#Grating= %s");
 	fskipl(f, 2);
 	[minutes, seconds] = sscanf(fgetl(f), "#Full time(mm:ss)= %f:%f", "C");
-	fulltime = minutes*60 + seconds;
+	D.totaltime = minutes*60 + seconds;
 	fskipl(f, 3);
-	title = sscanf(fgetl(f), "#Title= %s");
+	D.title = sscanf(fgetl(f), "#Title= %s");
 	fskipl(f, 3);
 
 	## Read the numeric data
 	data = dlmread(f);
 	fclose(f);
-	S = Spectrum(data(:,1), data(:,2),
-		"title", title,
-		"acqtime", acqtime,
-		"accumulations", accumulations,
-		"temperature", temperature,
-		"grating", grating,
-		"total time", fulltime);
-	S = S.appenddescription(sprintf("Loaded from path '%s'", filename));
+
+	if (any(strcmp(varargin, "Spectrum")))
+		S = Spectrum(data(:,1), data(:,2),
+			"title", D.title,
+			"acqtime", D.acqtime,
+			"accumulations", D.accumulations,
+			"temperature", D.temperature,
+			"grating", D.grating,
+			"total time", D.totaltime);
+		S = S.appenddescription(sprintf("Loaded from path '%s'", filename));
+		varargout = {S};
+	else
+		varargout = {data, D};
+	endif
 endfunction
