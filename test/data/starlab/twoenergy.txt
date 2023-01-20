@@ -1,0 +1,78 @@
+;PC Software:StarLab Version 3.72 Build 3
+! ******* Warning: Do not modify this file. Changes may prevent   ********
+! ******* the StarLab Log reader from opening the file correctly. ********
+;Logged:18/01/2023 at 17:13:11
+;File Version:5
+;Time Resolution:1 microseconds
+;Graph Mode:Merge
+;Graph Type:Line
+;Notes:                                                            
+
+;Channel A:Vega Pyroelectric PE9-ES-C (s/n:835971)  VG2.54 (s/n:547613)
+;Channel B:Vega Pyroelectric PE9 (s/n:574745)  VG2.54 (s/n:833869)
+
+;Channel A:Details
+;Name:PE9-ES-C
+;Graph Color:RGB(14,104,168)
+;Units:J
+;Settings:Measuring:Energy
+;Settings:Wavelength:196
+;Settings:Range:2.00uJ
+;Settings:Diffuser:N/A
+;Settings:Pulse Width:1.0us
+;Settings:Threshold:Min
+
+;Channel B:Details
+;Name:PE9
+;Graph Color:RGB(245,86,16)
+;Units:J
+;Settings:Measuring:Energy
+;Settings:Wavelength:196
+;Settings:Range:20.0uJ
+;Settings:Diffuser:N/A
+;Settings:Pulse Width:30uS
+;Settings:Threshold:N/A
+
+;Channel A:Statistics
+;Min:126.0nJ             
+;Max:2.200uJ             
+;Average:971.9nJ             
+;Std.Dev.:515.5nJ             
+;Overrange:3020                
+;Total Pulses:2758                
+
+;Channel B:Statistics
+;Min:620.0nJ             
+;Max:21.30uJ             
+;Average:9.592uJ             
+;Std.Dev.:5.010uJ             
+;Overrange:104                 
+;Total Pulses:5702                
+;--------------------
+
+
+;First Pulse Arrived : 18/01/2023 at 17:13:14
+  Timestamp   	  Channel A  	  Channel B  	
+        21.599	  8.140e-07 	  5.950e-06 	
+        21.619	             	  8.210e-06 	
+        21.620	  1.633e-06 	             	
+        21.640	  9.210e-07 	  5.970e-06 	
+        21.657	  Over       	  1.060e-05 	
+        21.678	  Over       	             	
+        21.680	             	  6.130e-06 	
+        21.698	  Over       	  6.780e-06 	
+        21.717	  Over       	             	
+        21.718	             	  6.850e-06 	
+        56.555	  Over       	             	
+        56.558	             	  2.105e-05 	
+        56.577	  Over       	             	
+        56.578	             	  Over       	
+        56.595	  Over       	  Over       	
+        56.616	             	  Over       	
+        56.618	  Over       	             	
+        56.635	  Over       	             	
+        56.937	  Over       	  1.895e-05 	
+        70.957	  2.084e-06 	  1.225e-05 	
+       109.057	  4.960e-07 	             	
+       109.076	  8.500e-07 	  4.340e-06 	
+

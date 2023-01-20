@@ -7,11 +7,12 @@
 ## @emph{Ophir StarLab} software.
 ##
 ## @var{file} is a path to the file to be read.
-## The expected format is 34 header lines starting with @code{;}
+## The expected format is multiple header lines starting with @code{;}
 ## and a data header followed by whitespace-separated numeric data.
-## The first column is interpreted as time, the second as signal intensity.
+## The first column is interpreted as time, subsequent columns are
+## signal intensity in individual channels.
 ##
-## This is an example header:
+## This is an example header for a file with one channel:
 ##
 ## @verbatim
 ##   ;PC Software:StarLab Version 3.72 Build 3
@@ -57,10 +58,11 @@
 ## The second return value @var{meta} is a struct with the metadata
 ## read from the file header.
 ## @end deftypefn
-function [data, D] = read_starlab(varargin)
+function [data, meta] = read_starlab(varargin)
 	p = inputParser;
 	p.addRequired("file");
 	p.addParameter("emptyvalue", nan);
+	p.addParameter("overvalue", Inf);
 	p.parse(varargin{:});
 	args = p.Results;
 
@@ -80,22 +82,41 @@ function [data, D] = read_starlab(varargin)
 	basename = [name ext];
 
 	## Parse header
-	D = struct();
-	channels = 0;
+	meta = struct();
+	ch = struct();
 	try
 		assert(startsw(fgetl(f), ";PC Software:StarLab Version"));
 		fskipl(f, 9);
-		## Channel A
-		fscanf(f, ";Channel A:");
-		D.description = fgetl(f);
-		fskipl(f, 2);
-		fscanf(f, ";Name:");
-		D.name = fgetl(f);
+
+		## Find number of channels and their names
+		k = 1;
+		while (!isempty(id = fscanf(f, ";Channel %c:")))
+			ch(k) = struct("id", id, "description", fgetl(f));
+			k++;
+		endwhile
 		fskipl(f, 1);
-		fscanf(f, ";Units:");
-		D.units = fgetl(f);
-		fskipl(f, 19);
-		channels += 1;
+
+		## Read the "Details" section of each channel
+		for k = 1:length(ch);
+			id = fscanf(f, ";Channel %c:Details");
+			assert(strcmp(ch(k).id, id));
+			fgetl(f);  # Consume rest of line
+			fscanf(f, ";Name:");
+			ch(k).name = fgetl(f);
+			fskipl(f, 1);
+			fscanf(f, ";Units:");
+			ch(k).units = fgetl(f);
+			while (!isempty(fgetl(f)))
+				## Keep skipping lines
+			endwhile
+		endfor
+
+		## Skip the "Statistics" section of each channel
+		while (!startsw(fgetl(f), ";---------"))
+			## Keep skipping lines
+		endwhile
+		fskipl(f, 4);
+		meta.channels = ch;
 	catch err
 		err.message = sprintf(
 			"read_starlab: Bad file header in %s: %s",
@@ -109,8 +130,19 @@ function [data, D] = read_starlab(varargin)
 		warning("read_starlab: No data in %s", basename);
 		data = [];
 	else
-		data = dlmread(f, "emptyvalue", args.emptyvalue);
-		data = data(:,1:channels+1);
+		fmt = [repmat("%s ", [1 length(ch) + 1]) "%*s"];
+		cdata = textscan(f, fmt,
+			"Delimiter", '\t',
+			"EmptyValue", args.emptyvalue);
+		cdata = [cdata{:}];
+		data = str2double(cdata);
+		## Handle "Over" values
+		m = strcmp(cdata, "Over       ");
+		data(m) = args.overvalue;
+		## Remove blank line at the end
+		if (all(isnan(data(end,:))) && rows(data) > 1)
+			data = data(1:end-1,:);
+		end
 	end
 endfunction
 
