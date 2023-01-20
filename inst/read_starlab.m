@@ -83,7 +83,7 @@ function [data, D] = read_starlab(varargin)
 	D = struct();
 	channels = 0;
 	try
-		assert(startsWith(fgetl(f), ";PC Software:StarLab Version"));
+		assert(startsw(fgetl(f), ";PC Software:StarLab Version"));
 		fskipl(f, 9);
 		## Channel A
 		fscanf(f, ";Channel A:");
@@ -112,6 +112,14 @@ function [data, D] = read_starlab(varargin)
 		data = dlmread(f, "emptyvalue", args.emptyvalue);
 		data = data(:,1:channels+1);
 	end
+endfunction
+
+function r = startsw(str, head)
+	if (length(str) >= length(head))
+		r = strcmp(str(1:length(head)), head);
+	else
+		r = false;
+	endif
 endfunction
 
 ## Tests are in the project's 'test' directory
