@@ -2,6 +2,8 @@
 ## @deftypefn  {} {[@var{data}, @var{meta}] =} read_starlab (@var{file})
 ## @deftypefnx {} {[@var{data}, @var{meta}] =} read_starlab @
 ##   (@dots{}, @qcode{"emptyvalue"}, @var{value})
+## @deftypefnx {} {[@var{data}, @var{meta}] =} read_starlab @
+##   (@dots{}, @qcode{"overvalue"}, @var{value})
 ##
 ## Read data from @var{file} in the format produced by the
 ## @emph{Ophir StarLab} software.
@@ -52,8 +54,11 @@
 ##     Timestamp   	  Channel A
 ## @end verbatim
 ##
-## The @qcode{"emptyvalue"} option specifies the value used to fill
-## non-numeric fields in data like @code{Over}. The default is @code{nan}.
+## The handling of non-numeric data in the file can be modified through
+## the named parameters @qcode{"emptyvalue"} and @qcode{"overvalue"}.
+## Both take a single scalar argument, which is the value used to fill
+## empty and over-range values (marked "Over" in the file).
+## The default values are @code{NaN} and @code{Inf}, respectively.
 ##
 ## The second return value @var{meta} is a struct with the metadata
 ## read from the file header.
