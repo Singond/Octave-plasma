@@ -4,6 +4,8 @@
 ##   (@dots{}, @qcode{"emptyvalue"}, @var{value})
 ## @deftypefnx {} {[@var{data}, @var{meta}] =} read_starlab @
 ##   (@dots{}, @qcode{"overvalue"}, @var{value})
+## @deftypefnx {} {[@var{data_1}, @var{data_2}, @dots{} @var{meta}] =} @
+##   read_starlab (@dots{})
 ##
 ## Read data from @var{file} in the format produced by the
 ## @emph{Ophir StarLab} software.
@@ -66,8 +68,17 @@
 ##
 ## The second return value @var{meta} is a struct with the metadata
 ## read from the file header.
+##
+## In the last form, return the data separately for each channel.
+## Each of the return values @var{data_n} is a two column matrix,
+## where the first column is the first column from the file
+## and the second column is the data of the @code{n}th channel.
+## In this case, the matrix for each channel contains only valid
+## values (numbers and "Over"), the empty values having been filtered out.
+## Note that to invoke this variant, at least three output arguments
+## must be given.
 ## @end deftypefn
-function [data, meta] = read_starlab(varargin)
+function varargout = read_starlab(varargin)
 	p = inputParser;
 	p.addRequired("file");
 	p.addParameter("emptyvalue", NaN);
@@ -119,6 +130,7 @@ function [data, meta] = read_starlab(varargin)
 				## Keep skipping lines
 			endwhile
 		endfor
+		clear k;
 
 		## Skip the "Statistics" section of each channel
 		while (!startsw(fgetl(f), ";---------"))
@@ -137,7 +149,7 @@ function [data, meta] = read_starlab(varargin)
 	if (feof(f))
 		## No data after header
 		warning("read_starlab: No data in %s", basename);
-		data = [];
+		varargout = {[], meta};
 		return;
 	end
 
@@ -165,6 +177,21 @@ function [data, meta] = read_starlab(varargin)
 	## Remove blank line at the end
 	if (all(empty(end,:)))
 		data = data(1:end-1,:);
+		empty = empty(1:end-1,:);
+	end
+
+	## Split return value per channel, removing rows with empty value
+	if (nargout > 2)
+		t = data(:,1);
+		out = {};
+		for c = 2:columns(data)
+			v = data(:,c);
+			m = !empty(:,c);
+			out = [out, {[t(m) v(m)]}];
+		end
+		varargout = [out, {meta}];
+	else
+		varargout = {data, meta};
 	end
 endfunction
 
