@@ -76,3 +76,12 @@
 %! assert(d(6,3), NA);
 %! assert(sum(isna(d)), [0 6 8]);
 %! assert(sum(d == 0), [0 10 3]);
+
+%!test
+%! [d, m] = read_starlab("data/starlab/twoenergy.txt", "overvalue", "max");
+%! assert(d(5,2),  2.084e-6);
+%! assert(d(14,3), 2.105e-5);
+%! # For n "Over" values in a column, the number of max values is n + 1
+%! # (n "Over" values plus the original maximum itself).
+%! assert(sum(d == 2.084e-6), [0 11 0]);
+%! assert(sum(d == 2.105e-5), [0  0 4]);

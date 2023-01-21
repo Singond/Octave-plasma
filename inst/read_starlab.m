@@ -60,6 +60,10 @@
 ## empty and over-range values (marked "Over" in the file).
 ## The default values are @code{NaN} and @code{Inf}, respectively.
 ##
+## In addition, the @qcode{"overvalue"} can be the string @qcode{"max"},
+## in which case the over-range values are filled with the maximum
+## valid number in the respective column.
+##
 ## The second return value @var{meta} is a struct with the metadata
 ## read from the file header.
 ## @end deftypefn
@@ -143,13 +147,20 @@ function [data, meta] = read_starlab(varargin)
 	cdata = [cdata{:}];
 	data = str2double(cdata);
 
+	## Handle "Over" values
+	over = strcmp(cdata, "Over       ");
+	if (strcmp(args.overvalue, "max"))
+		## Substitute overs with maximum in that column
+		cmax = max(data, [], 1);
+		m = over .* cmax;
+		data(over) = m(over);
+	else
+		data(over) = args.overvalue;
+	end
+
 	## Handle empty values
 	empty = cellfun("isempty", cdata);
 	data(empty) = args.emptyvalue;
-
-	## Handle "Over" values
-	over = strcmp(cdata, "Over       ");
-	data(over) = args.overvalue;
 
 	## Remove blank line at the end
 	if (all(empty(end,:)))
