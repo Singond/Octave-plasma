@@ -66,7 +66,7 @@
 function [data, meta] = read_starlab(varargin)
 	p = inputParser;
 	p.addRequired("file");
-	p.addParameter("emptyvalue", nan);
+	p.addParameter("emptyvalue", NaN);
 	p.addParameter("overvalue", Inf);
 	p.parse(varargin{:});
 	args = p.Results;
@@ -136,16 +136,17 @@ function [data, meta] = read_starlab(varargin)
 		data = [];
 	else
 		fmt = [repmat("%s ", [1 length(ch) + 1]) "%*s"];
-		cdata = textscan(f, fmt,
-			"Delimiter", '\t',
-			"EmptyValue", args.emptyvalue);
+		cdata = textscan(f, fmt, "Delimiter", '\t');
 		cdata = [cdata{:}];
 		data = str2double(cdata);
+		## Handle empty values
+		empty = cellfun("isempty", cdata);
+		data(empty) = args.emptyvalue;
 		## Handle "Over" values
-		m = strcmp(cdata, "Over       ");
-		data(m) = args.overvalue;
+		over = strcmp(cdata, "Over       ");
+		data(over) = args.overvalue;
 		## Remove blank line at the end
-		if (all(isnan(data(end,:))) && rows(data) > 1)
+		if (all(empty(end,:)))
 			data = data(1:end-1,:);
 		end
 	end

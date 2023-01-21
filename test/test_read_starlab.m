@@ -61,3 +61,18 @@
 %!   70.957   2.084e-6  1.225e-05
 %!   109.057  4.960e-7  NaN
 %!   109.076  8.500e-7  4.340e-06]);
+
+%!test
+%! [d, m] = read_starlab("data/starlab/twoenergy.txt", "emptyvalue", -Inf);
+%! assert(d(1,2), 8.140e-7);
+%! assert(d(2,2), -Inf);
+%! assert(sum(d == -Inf), [0 6 8]);
+
+%!test
+%! [d, m] = read_starlab("data/starlab/twoenergy.txt",
+%!     "emptyvalue", NA, "overvalue", 0);
+%! assert(d(6,1), 21.678);
+%! assert(d(6,2), 0);
+%! assert(d(6,3), NA);
+%! assert(sum(isna(d)), [0 6 8]);
+%! assert(sum(d == 0), [0 10 3]);
