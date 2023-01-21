@@ -129,26 +129,31 @@ function [data, meta] = read_starlab(varargin)
 		rethrow(err);
 	end
 
-	## Read data
+	## Finish gracefully if there is no data
 	if (feof(f))
 		## No data after header
 		warning("read_starlab: No data in %s", basename);
 		data = [];
-	else
-		fmt = [repmat("%s ", [1 length(ch) + 1]) "%*s"];
-		cdata = textscan(f, fmt, "Delimiter", '\t');
-		cdata = [cdata{:}];
-		data = str2double(cdata);
-		## Handle empty values
-		empty = cellfun("isempty", cdata);
-		data(empty) = args.emptyvalue;
-		## Handle "Over" values
-		over = strcmp(cdata, "Over       ");
-		data(over) = args.overvalue;
-		## Remove blank line at the end
-		if (all(empty(end,:)))
-			data = data(1:end-1,:);
-		end
+		return;
+	end
+
+	## Read data
+	fmt = [repmat("%s ", [1 length(ch) + 1]) "%*s"];
+	cdata = textscan(f, fmt, "Delimiter", '\t');
+	cdata = [cdata{:}];
+	data = str2double(cdata);
+
+	## Handle empty values
+	empty = cellfun("isempty", cdata);
+	data(empty) = args.emptyvalue;
+
+	## Handle "Over" values
+	over = strcmp(cdata, "Over       ");
+	data(over) = args.overvalue;
+
+	## Remove blank line at the end
+	if (all(empty(end,:)))
+		data = data(1:end-1,:);
 	end
 endfunction
 
