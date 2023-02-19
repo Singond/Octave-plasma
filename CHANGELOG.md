@@ -5,4 +5,15 @@ This is a changelog for the Octave `singon-plasma` package.
 [Unreleased]
 ------------
 ### Added
+- Separate handling of over-range values in Starlab files.
+- Support for Starlab files with multiple data channels.
+
+### Changed
+- Removed `read_starlab` dependency on the `startsWith` function,
+  as it is only available in newer Octave versions.
+
+[0.1.0] - 2022-11-25
+--------------------
+### Added
 - Functions to load data from several file formats produced by instruments.
+- Function `eedffit` to fit data with common EEDF shapes.
