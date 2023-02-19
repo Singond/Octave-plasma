@@ -2,8 +2,8 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
-[Unreleased]
-------------
+[0.2.0] - 2023-02-19
+--------------------
 ### Added
 - Separate handling of over-range values in Starlab files.
 - Support for Starlab files with multiple data channels.
