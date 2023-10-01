@@ -9,6 +9,12 @@
 ## The second argument, @var{trigp}, is the triggering period in seconds,
 ## that is the time between consecutive accumulations of signal.
 ##
+## Zero time is the start of the first frame.
+## Duration of each frame is estimated as the triggering pereiod @var{trigp}
+## multiplied by the number of accumulations @code{SPE.accum}.
+## The delay between the end of one exposure and the beginning of another
+## is assumed to be equal to read-out time @code{SPE.readouttime}.
+##
 ## The output is a two-column matrix with one row for each frame,
 ## where the first and second columns correspond to the beginning
 ## and end of that frame, respectively.
