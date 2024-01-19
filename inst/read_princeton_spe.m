@@ -50,7 +50,7 @@
 ##
 ## @itemize
 ## @item
-## Versions 2.x (and possibly older) start with a 4100 bytes-long header
+## Versions 2.x (and possibly older) start with a 4100-bytes-long header
 ## which contains information necessary to correctly read the image data
 ## and some optional metadata.
 ## This header is followed by the raw image data.
@@ -69,14 +69,14 @@
 ## implementation in Octave.
 ## If the version is not supported, the function fails with an error.
 ##
-## However, in some files, the most important values like image dimensions
-## or number of frames are also set in the header to make the file
+## However, in some version 3.x files, the most important values like image
+## dimensions or number of frames are also set in the header to make the file
 ## backward-compatible with older software.
 ## In this case, this function ignores the footer and tries reading
 ## the data based on the information in the header, while guessing the
 ## amount of metadata between frames from the total size.
 ## This mode of operation is indicated by a warning message.
-## Note that it is a hack at best and errors are to be expected.
+## Note that this is a hack at best and errors are to be expected.
 ## @end deftypefn
 function [img, D] = read_princeton_spe(file)
 	cleanup = [];
