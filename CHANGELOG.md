@@ -5,7 +5,10 @@ This is a changelog for the Octave `singon-plasma` package.
 [Unreleased]
 ------------
 ### Added
-- Imported function `fit_decay` and `show_fit_decay`.
+- Imported function `fit_decay` and `plot_fit_decay`.
+
+### Changed
+- Improved the documentation of several functions.
 
 [0.2.0] - 2023-02-19
 --------------------
