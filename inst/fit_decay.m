@@ -98,7 +98,7 @@ function r = fit_decay(varargin)
 		## Check dimensions
 		sz = size(in);
 		if (length(t) != size(in, dim))
-			error("Incompatible dimensions");
+			error("fit_decay: Incompatible dimensions of X and Y");
 		end
 
 		## Move dimension DIM to the beginning
