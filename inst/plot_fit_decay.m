@@ -1,9 +1,9 @@
 ## -*- texinfo -*-
-## @deftypefn  {} {} show_fit_decay (@var{x}, @var{y}, @var{fit})
-## @deftypefnx {} {} show_fit_decay (@dots{}, @qcode{"dim"}, @var{dim})
-## @deftypefnx {} {} show_fit_decay (@dots{}, @qcode{"idx"}, @var{idx})
-## @deftypefnx {} {} show_fit_decay (@dots{}, @qcode{"only"}, @code{@{"fitl", @dots{}@}})
-## @deftypefnx {} {} show_fit_decay (@var{s}, @dots{})
+## @deftypefn  {} {} plot_fit_decay (@var{x}, @var{y}, @var{fit})
+## @deftypefnx {} {} plot_fit_decay (@dots{}, @qcode{"dim"}, @var{dim})
+## @deftypefnx {} {} plot_fit_decay (@dots{}, @qcode{"idx"}, @var{idx})
+## @deftypefnx {} {} plot_fit_decay (@dots{}, @qcode{"only"}, @code{@{"fitl", @dots{}@}})
+## @deftypefnx {} {} plot_fit_decay (@var{s}, @dots{})
 ##
 ## Plot the fit produced by @code{fit_decay}.
 ##
@@ -28,7 +28,7 @@
 ## Instead of @var{x} and @var{y}, the same struct can be given
 ## as in the call to @code{fit_decay}.
 ## @end deftypefn
-function show_fit_decay(varargin)
+function plot_fit_decay(varargin)
 	if (nargin == 0)
 		print_usage();
 	end
@@ -133,40 +133,40 @@ end
 %! x = (0:15)';
 %! y = exp(4:-0.25:0.25)';
 %! fits = fit_decay(x, y);
-%! show_fit_decay(x, y, fits);
+%! plot_fit_decay(x, y, fits);
 %! title("Fit all data");
 
 %!demo
 %! x = (0:15)';
 %! y = exp([0.38 1.54 2.98 2.46 3:-0.25:0.25])';
 %! fits = fit_decay(x, y, "xmin", 4);
-%! show_fit_decay(x, y, fits);
+%! plot_fit_decay(x, y, fits);
 %! title("Fit data with x >= 4");
 
 %!demo
 %! x = (0:15)';
 %! y = exp((4:-0.25:0.25) .* [2; 1.5; 1]);
 %! fits = fit_decay(x, y, "dim", 2);
-%! show_fit_decay(x, y, fits, "dim", 2);
+%! plot_fit_decay(x, y, fits, "dim", 2);
 %! title("Multiple fits");
 
 %!demo
 %! x = (0:15)';
 %! y = exp((4:-0.25:0.25) .* [2; 1.5; 1]);
 %! fits = fit_decay(x, y, "dim", 2);
-%! show_fit_decay(x, y, fits, "idx", {1:2, 1}, "dim", 2);
-%! title("Plot only a subset of fits");
+%! plot_fit_decay(x, y, fits, "idx", {1:2, 1}, "dim", 2);
+%! title("A subset of multiple fits");
 
 %!demo
 %! s.t = (0:15)';
 %! s.in = exp(4:-0.25:0.25)';
 %! fits = fit_decay(s);
-%! show_fit_decay(s, fits);
+%! plot_fit_decay(s, fits);
 %! title("With structure argument");
 
 %!demo
 %! s.t = (0:15)';
 %! s.in = reshape(exp(4:-0.25:0.25), 1, 1, []);
 %! fits = fit_decay(s.t, s.in, "dim", 3);
-%! show_fit_decay(s, fits);
+%! plot_fit_decay(s, fits);
 %! title("With structure argument and higher dimension");
