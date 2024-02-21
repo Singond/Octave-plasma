@@ -7,8 +7,6 @@
 ##
 ## Plot the fit produced by @code{fit_decay}.
 ##
-## The parametercell array argument
-
 ## The function accepts several optional parameters:
 ##
 ## @table @code
