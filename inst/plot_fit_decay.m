@@ -54,11 +54,14 @@ function plot_fit_decay(varargin)
 	fit = p.Results.fit;
 	dim = p.Results.dim;
 	idx = p.Results.idx;
+	fitidx = reshape(1:numel(fit), size(fit));
 
 	if (!isempty(idx))
+		assert(dim <= ndims(fit) + 1);
 		fit = subsref(fit, substruct("()", idx));
+		fitidx = subsref(fitidx, substruct("()", idx));
 	end
-	dims= 1:ndims(y);
+	dims = 1:ndims(y);
 	y = permute(y, [dim dims(dims != dim)]);
 	y = reshape(y, length(x), []);
 
@@ -71,7 +74,8 @@ function plot_fit_decay(varargin)
 	hold on;
 	for k = 1:numel(fit)
 		fitk = fit(k);
-		yk = y(:,k);
+		idxk = fitidx(k);
+		yk = y(:,idxk);
 		xx = linspace(xmin, xmax);
 		yl = yb = ye = [];
 		if (any(strcmp(fields, "fitl")))
@@ -139,20 +143,20 @@ end
 %! y = exp([0.38 1.54 2.98 2.46 3:-0.25:0.25])';
 %! fits = fit_decay(x, y, "xmin", 4);
 %! plot_fit_decay(x, y, fits);
-%! title("Fit data with x >= 4");
+%! title("Fit data where x >= 4");
 
 %!demo
 %! x = (0:15)';
-%! y = exp((4:-0.25:0.25) .* [2; 1.5; 1]);
+%! y = exp((4:-0.25:0.25) .* [2; 1.7; 1.5; 1.2; 1]);
 %! fits = fit_decay(x, y, "dim", 2);
 %! plot_fit_decay(x, y, fits, "dim", 2);
-%! title("Multiple fits");
+%! title("Multiple fits along 2nd dimension");
 
 %!demo
 %! x = (0:15)';
-%! y = exp((4:-0.25:0.25) .* [2; 1.5; 1]);
+%! y = exp((4:-0.25:0.25) .* [2; 1.7; 1.5; 1.2; 1]);
 %! fits = fit_decay(x, y, "dim", 2);
-%! plot_fit_decay(x, y, fits, "idx", {1:2, 1}, "dim", 2);
+%! plot_fit_decay(x, y, fits, "idx", {[3:5], 1}, "dim", 2);
 %! title("A subset of multiple fits");
 
 %!demo
@@ -164,7 +168,7 @@ end
 
 %!demo
 %! s.t = (0:15)';
-%! s.in = reshape(exp(4:-0.25:0.25), 1, 1, []);
+%! s.in = exp([0.7 0.8 0.9; 1.0 1.1 1.2] .* reshape(4:-0.25:0.25, 1, 1, []));
 %! fits = fit_decay(s.t, s.in, "dim", 3);
-%! plot_fit_decay(s, fits);
+%! plot_fit_decay(s, fits, "dim", 3, "idx", {1, 2:3});
 %! title("With structure argument and higher dimension");
