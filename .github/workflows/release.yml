@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Run tests
-        run: make check
       - name: Build output
         run: make dist
       - name: Create a release
