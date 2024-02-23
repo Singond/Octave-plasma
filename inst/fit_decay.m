@@ -137,10 +137,13 @@ function x = _fit_decay(t, in)
 	x.fitl.f = @(t) exp(polyval(x.fitl.beta, t));
 	x.fitl.beta_std = s.normr * sqrt(diag(s.C) / s.df);
 
+	model_simple = @(t, b) b(1) .* exp(-t./b(2));
+	model_yconst = @(t, b) b(1) .* exp(-t./b(2)) + b(3);
+
 	## Exponential model
 	b0 = [exp(x.fitl.beta(2)), x.fitl.tau];
 	s = struct();
-	[~, s.beta, s.cvg, s.iter] = leasqr(t, in, b0, @model_simple, [], 30);
+	[~, s.beta, s.cvg, s.iter] = leasqr(t, in, b0, model_simple, [], 30);
 	if (!s.cvg)
 		warning("Convergence not reached after %d iterations.", s.iter);
 	end
@@ -151,7 +154,7 @@ function x = _fit_decay(t, in)
 	## Exponential model with constant
 	b0 = [exp(x.fitl.beta(2)), x.fite.tau, 0];
 	s = struct();
-	[~, s.beta, s.cvg, s.iter] = leasqr(t, in, b0, @model_yconst, [], 30);
+	[~, s.beta, s.cvg, s.iter] = leasqr(t, in, b0, model_yconst, [], 30);
 	if (!s.cvg)
 		warning("Convergence not reached after %d iterations.", s.iter);
 	end
@@ -164,7 +167,7 @@ function x = _fit_decay(t, in)
 	b0 = x.fitb.beta(1:2);
 	s = struct();
 	[inm, s.beta, s.cvg, s.iter, s.cor, s.cov]...
-		= leasqr(t, in, b0, @model_simple, [], 30);
+		= leasqr(t, in, b0, model_simple, [], 30);
 	if (!s.cvg)
 		warning("Convergence not reached after %d iterations.", s.iter);
 	end
@@ -177,14 +180,6 @@ function x = _fit_decay(t, in)
 	s.tau = s.beta(2);
 	s.tausig = s.betasig(2);
 	x.fite = s;
-end
-
-function r = model_simple(t, b)
-	r = b(1) .* exp(-t./b(2));
-end
-
-function r = model_yconst(t, b)
-	r = b(1) .* exp(-t./b(2)) + b(3);
 end
 
 %!shared x, y
