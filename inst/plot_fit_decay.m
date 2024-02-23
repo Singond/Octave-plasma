@@ -21,6 +21,12 @@
 ## @item only
 ## This is a cell array which selects which fits in @var{fit}
 ## will be plotted. The default is to plot all fits.
+##
+## @item label
+## A label of the plot in the legend.
+## The value can also be a function which accepts two arguments:
+## The (scalar) fit struct corresponding to the given data series,
+## and a cell array of its indices in @var{fit}.
 ## @end table
 ##
 ## Instead of @var{x} and @var{y}, the same struct can be given
@@ -49,6 +55,7 @@ function plot_fit_decay(varargin)
 	p.addParameter("dim", 1, @isnumeric);
 	p.addParameter("idx", {}, @iscell);
 	p.addParameter("only", {"fitl", "fitb", "fite"}, @iscell);
+	p.addParameter("label", "");
 	p.parse(varargin{k:end});
 
 	fit = p.Results.fit;
@@ -66,6 +73,7 @@ function plot_fit_decay(varargin)
 	y = reshape(y, length(x), []);
 
 	fields = p.Results.only;
+	label = p.Results.label;
 
 	[xmin, xmax] = bounds(x);
 	[ymin, ymax] = bounds(y(:));
@@ -75,6 +83,7 @@ function plot_fit_decay(varargin)
 	for k = 1:numel(fit)
 		fitk = fit(k);
 		idxk = fitidx(k);
+		subsk = nthargout(1:ndims(fit), @ind2sub, size(fit), idxk);
 		yk = y(:,idxk);
 		xx = linspace(xmin, xmax);
 		yl = yb = ye = [];
@@ -87,7 +96,6 @@ function plot_fit_decay(varargin)
 		if (any(strcmp(fields, "fite")))
 			ye = fitk.fite.f(xx);    # exponential fit
 		end
-		taue = fitk.fite.tau;
 
 		## Limit fitted functions to similar y-range as data
 		if (strcmp(get(gca, "yscale"), "log"))
@@ -105,11 +113,19 @@ function plot_fit_decay(varargin)
 		cidx = get(gca(), "colororderindex");
 		cc = get(gca(), "colororder")(cidx,:);
 		xscale = 1;
-		label = sprintf("[%d, %d] \\tau_e = %.3f ns", 0, 0, taue * xscale);
+
+		labelargs = {};
+		if (!isempty(label))
+			labelk = label;
+			if (is_function_handle(label))
+				labelk = label(fitk, subsk);
+			end
+			labelargs = {"displayname", labelk};
+		end
 		plot(
 			x * xscale, yk, "d",
-				"color", cc, "displayname",
-				label,
+				"color", cc,
+				labelargs{:},
 			xx(ml) * xscale, yl(ml),
 				"b:", "color", cc, "handlevisibility", "off",
 			xx(mb) * xscale, yb(mb),
@@ -158,6 +174,16 @@ end
 %! fits = fit_decay(x, y, "dim", 2);
 %! plot_fit_decay(x, y, fits, "idx", {[3:5], 1}, "dim", 2);
 %! title("A subset of multiple fits");
+
+%!demo
+%! x = (0:15)';
+%! y = exp((4:-0.25:0.25) .* [2; 1.7; 1.5; 1.2; 1]);
+%! fits = fit_decay(x, y, "dim", 2);
+%! fmtsubs = @(subs) sprintf("%d,", subs{:})(1:end-1);
+%! labelfun = @(fit, subs) sprintf("[%s] tau = %f", fmtsubs(subs), fit.fite.tau);
+%! plot_fit_decay(x, y, fits, "dim", 2, "label", labelfun);
+%! legend show
+%! title("Custom labels with function in 'label' parameter");
 
 %!demo
 %! s.t = (0:15)';
