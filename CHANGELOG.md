@@ -2,6 +2,11 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.3.1] - 2024-02-24
+--------------------
+Removed tests from Github actions to fix deployment,
+otherwise same as `0.3.0`.
+
 [0.3.0] - 2024-02-23
 --------------------
 ### Added
