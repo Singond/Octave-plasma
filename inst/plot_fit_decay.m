@@ -83,7 +83,8 @@ function plot_fit_decay(varargin)
 	for k = 1:numel(fit)
 		fitk = fit(k);
 		idxk = fitidx(k);
-		subsk = nthargout(1:ndims(fit), @ind2sub, size(fit), idxk);
+		fits = p.Results.fit;
+		subsk = nthargout(1:ndims(fits), @ind2sub, size(fits), idxk);
 		yk = y(:,idxk);
 		xx = linspace(xmin, xmax);
 		yl = yb = ye = [];
@@ -196,5 +197,9 @@ end
 %! s.t = (0:15)';
 %! s.in = exp([0.7 0.8 0.9; 1.0 1.1 1.2] .* reshape(4:-0.25:0.25, 1, 1, []));
 %! fits = fit_decay(s.t, s.in, "dim", 3);
-%! plot_fit_decay(s, fits, "dim", 3, "idx", {1, 2:3});
+%! fmtsubs = @(subs) sprintf("%d,", subs{:})(1:end-1);
+%! labelfun = @(fit, subs) sprintf("[%s] tau = %f", fmtsubs(subs), fit.fite.tau);
+%! plot_fit_decay(s, fits, "dim", 3, "idx", {2:3}, "label", labelfun);
+%! legend show
 %! title("With structure argument and higher dimension");
+%! # The labels should show coordinates [2,1] and [1,2].
