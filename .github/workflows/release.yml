@@ -17,4 +17,4 @@ jobs:
         with:
           tag: "${{github.tag}}"
           token: ${{secrets.GITHUB_TOKEN}}
-          artifacts: "build/*.tar.gz"
+          artifacts: "target/*.tar.gz"
