@@ -11,7 +11,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Run tests
-        run: docker run -it --rm gnuoctave/octave:8.4.0 make check
+        run: docker run --rm gnuoctave/octave:8.4.0 make check
       - name: Build output
         run: make dist
       - name: Create a release
