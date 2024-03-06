@@ -178,7 +178,8 @@ function varargout = read_starlab(varargin)
 	data = str2double(cdata);
 
 	## Handle "Over" values
-	over = strcmp(cdata, "Over       ");
+	over = false(size(cdata));
+	over(:,2:end) = strcmp(cdata(:,2:end), "Over       ");
 	if (strcmp(args.overvalue, "max"))
 		## Substitute overs with maximum in that column
 		cmax = max(data, [], 1);
@@ -189,7 +190,8 @@ function varargout = read_starlab(varargin)
 	end
 
 	## Handle empty values
-	empty = cellfun("isempty", cdata);
+	empty = false(size(cdata));
+	empty(:,2:end) = cellfun("isempty", cdata(:,2:end));
 	data(empty) = args.emptyvalue;
 
 	## Check data with statistics from header
