@@ -172,7 +172,12 @@ function varargout = read_starlab(varargin)
 	end
 
 	## Read data
-	fmt = [repmat("%s ", [1 length(ch) + 1]) "%*s"];
+	fmt = repmat("%s ", [1 length(ch) + 1]);
+	## Newer Octave versions read another (empty) element
+	## after the trailing tab:
+	if (compare_versions(version, "8.0.0", ">="))
+		fmt = [fmt "%*s"];
+	end
 	cdata = textscan(f, fmt, "Delimiter", '\t');
 	cdata = [cdata{:}];
 	data = str2double(cdata);
