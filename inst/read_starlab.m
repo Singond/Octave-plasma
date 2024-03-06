@@ -130,12 +130,30 @@ function varargout = read_starlab(varargin)
 				## Keep skipping lines
 			endwhile
 		endfor
+
+		header_ended = false;
+		for k = 1:length(ch);
+			assert(!header_ended);
+			id = fscanf(f, ";Channel %c:Statistics");
+			assert(strcmp(ch(k).id, id));
+			fgetl(f);  # Consume rest of line
+			while (!header_ended && !isempty(line = fgetl(f)))
+				if (startsw(line, ";---------"))
+					header_ended = true;
+					continue;
+				endif
+				assert(startsw(line, ";"));
+				line = line(2:end);
+				parts = strsplit(line, ":");
+				if (strcmp(parts{1}, "Overrange"))
+					ch(k).overrange = str2double(parts{2});
+				elseif (strcmp(parts{1}, "Total Pulses"))
+					ch(k).pulses = str2double(parts{2});
+				endif
+			endwhile
+		endfor
 		clear k;
 
-		## Skip the "Statistics" section of each channel
-		while (!startsw(fgetl(f), ";---------"))
-			## Keep skipping lines
-		endwhile
 		fskipl(f, 4);
 		meta.channels = ch;
 	catch err
@@ -173,6 +191,22 @@ function varargout = read_starlab(varargin)
 	## Handle empty values
 	empty = cellfun("isempty", cdata);
 	data(empty) = args.emptyvalue;
+
+	## Check data with statistics from header
+	for k = 1:length(ch);
+		oversum = sum(over(:,k+1));
+		if (oversum != ch(k).overrange)
+			error("read_starlab: Found %d 'Over' values in channel %s but header states %d",
+				oversum, ch(k).id, ch(k).overrange);
+		endif
+
+		emptysum = sum(empty(:,k+1));
+		nonempty = rows(cdata) - emptysum;
+		if (nonempty != ch(k).pulses)
+			error("read_starlab: Found %d nonempty values in channel %s but header states %d",
+				nonempty, ch(k).id, ch(k).pulses);
+		endif
+	endfor
 
 	## Remove blank line at the end
 	if (all(empty(end,:)))
