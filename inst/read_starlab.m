@@ -203,7 +203,7 @@ function varargout = read_starlab(varargin)
 		endif
 
 		emptysum = sum(empty(:,k+1));
-		nonempty = rows(cdata) - emptysum;
+		nonempty = rows(cdata) - emptysum - oversum;
 		if (nonempty != ch(k).pulses)
 			error("read_starlab: Found %d nonempty values in channel %s but header states %d",
 				nonempty, ch(k).id, ch(k).pulses);
@@ -211,7 +211,7 @@ function varargout = read_starlab(varargin)
 	endfor
 
 	## Remove blank line at the end
-	if (all(empty(end,:)))
+	if (all(empty(end,2:end)))
 		data = data(1:end-1,:);
 		empty = empty(1:end-1,:);
 	end
