@@ -38,16 +38,16 @@
 ;Max:2.200uJ             
 ;Average:971.9nJ             
 ;Std.Dev.:515.5nJ             
-;Overrange:3020                
-;Total Pulses:2758                
+;Overrange:10                  
+;Total Pulses:6                   
 
 ;Channel B:Statistics
 ;Min:620.0nJ             
 ;Max:21.30uJ             
 ;Average:9.592uJ             
 ;Std.Dev.:5.010uJ             
-;Overrange:104                 
-;Total Pulses:5702                
+;Overrange:3                   
+;Total Pulses:11                  
 ;--------------------
 
 
