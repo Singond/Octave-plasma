@@ -2,6 +2,12 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.3.3] - 2024-03-07
+--------------------
+### Fixed
+- Made the `read_starlab` function compatible with older versions
+  of Octave.
+
 [0.3.2] - 2024-02-24
 --------------------
 Fixed output directory in Github actions to correct missing
