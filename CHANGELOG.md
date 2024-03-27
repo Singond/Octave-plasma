@@ -2,6 +2,11 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.6.0] - 2024-03-27
+--------------------
+### Added
+- More options to control the style of `plot_fit_voigt`.
+
 [0.5.1] - 2024-03-27
 --------------------
 ### Fixed
