@@ -2,6 +2,12 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.5.1] - 2024-03-27
+--------------------
+### Fixed
+- Removed warning displayed when running `help fit_voigt`
+  caused by a syntax error in the function documentation.
+
 [0.5.0] - 2024-03-27
 --------------------
 ### Added

@@ -11,7 +11,7 @@
 ##
 ## Behaviour of the fit can be controlled by the following key-value pair:
 ##
-## @table @qcode
+## @table @asis
 ##
 ## @item scaleratio
 ## This is a vector of two numbers, which control how the scale of the
