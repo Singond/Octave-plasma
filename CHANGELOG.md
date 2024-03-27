@@ -2,6 +2,11 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.5.0] - 2024-03-27
+--------------------
+### Added
+- Support for fitting Voigt profile to data (see `fit_voigt`).
+
 [0.4.0] - 2024-03-26
 --------------------
 ### Added
