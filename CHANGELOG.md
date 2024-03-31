@@ -2,6 +2,14 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.7.0] - 2024-03-31
+--------------------
+### Changed
+- Improved the fits returned by `fit_voigt` by performing the fit with
+  the peak centered at zero, then moving the data back.
+  The function now also returns more structured output in its second
+  output argument, including the total residual.
+
 [0.6.0] - 2024-03-27
 --------------------
 ### Added
