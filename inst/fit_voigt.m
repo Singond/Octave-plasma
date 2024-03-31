@@ -69,10 +69,14 @@ function [p, r] = fit_voigt(x, y, varargin)
 
 	model = @(p, x) p(4) * voigt(x, p(1), p(2), p(3)) + p(5);
 
+	## Move peak to zero to avoid low relative differences in x
+	xshift = r.prefit.x0;
+	x -= xshift;
+
 	## Initial parameters
 	p0 = [scaleratio(1) * r.prefit.sigma;
 		scaleratio(1) * r.prefit.sigma;
-		r.prefit.x0;
+		r.prefit.x0 - xshift;
 		0;
 		r.prefit.y0];
 	## Match height
@@ -86,6 +90,7 @@ function [p, r] = fit_voigt(x, y, varargin)
 	if (!r.cvg)
 		warning("Convergence not reached after %d iterations.", r.iter);
 	end
+	r.p(3) += xshift;
 	r.sigma = r.p(1);
 	r.gamma = r.p(2);
 	r.x0 = r.p(3);
