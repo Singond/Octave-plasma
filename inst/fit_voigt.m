@@ -86,6 +86,12 @@ function [p, r] = fit_voigt(x, y, varargin)
 	if (!r.cvg)
 		warning("Convergence not reached after %d iterations.", r.iter);
 	end
+	r.sigma = r.p(1);
+	r.gamma = r.p(2);
+	r.x0 = r.p(3);
+	r.yscale = r.p(4);
+	r.bg = r.p(5);
+	r.residual = sumsq(y - yfit);
 	r.f0 = @(x) model(p0, x);
 	r.f = @(x) model(r.p, x);
 
