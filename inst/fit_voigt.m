@@ -96,7 +96,9 @@ function [p, r] = fit_voigt(x, y, varargin)
 	r.x0 = r.p(3);
 	r.yscale = r.p(4);
 	r.bg = r.p(5);
-	r.residual = sumsq(y - yfit);
+	yresid = y - yfit;
+	r.residual = sumsq(yresid);
+	r.residualw = sumsq(yresid .* wt ./ sum(wt(:)));
 	r.f0 = @(x) model(p0, x);
 	r.f = @(x) model(r.p, x);
 

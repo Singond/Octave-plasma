@@ -2,6 +2,13 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.7.1] - 2024-03-31
+--------------------
+### Fixed
+- `fit_voigt` now returns both plain and weighted residuals.
+  The weighted residuals are in the `residualw` field of the second
+  output value.
+
 [0.7.0] - 2024-03-31
 --------------------
 ### Changed
