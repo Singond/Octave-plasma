@@ -63,7 +63,7 @@ function [p, r] = fit_voigt(x, y, varargin)
 	r.prefit.f = @(x) exp(polyval(p, x)) + d;
 
 	## Choose sample weights
-	if (wt)
+	if (isempty(wt))
 		wt = ones(size(y));
 	end
 
