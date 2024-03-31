@@ -67,7 +67,7 @@ function [p, r] = fit_voigt(x, y, varargin)
 		wt = ones(size(y));
 	end
 
-	model = @(x, p) p(4) * voigt(x, p(1), p(2), p(3)) + p(5);
+	model = @(p, x) p(4) * voigt(x, p(1), p(2), p(3)) + p(5);
 
 	## Initial parameters
 	p0 = [scaleratio(1) * r.prefit.sigma;
@@ -80,13 +80,14 @@ function [p, r] = fit_voigt(x, y, varargin)
 	p0(4) = exp(r.prefit.p(3)) / maxy;
 
 	## Fit
-	s = struct();
-	[~, r.p, r.cvg, r.iter] = leasqr(x, y, p0, model, [], 30, wt);
+	settings = optimset("weights", wt);
+	[r.p, yfit, r.cvg, outp] = nonlin_curvefit(model, p0, x, y, settings);
+	r.iter = outp.niter;
 	if (!r.cvg)
-		warning("Convergence not reached after %d iterations.", s.iter);
+		warning("Convergence not reached after %d iterations.", r.iter);
 	end
-	r.f0 = @(x) model(x, p0);
-	r.f = @(x) model(x, r.p);
+	r.f0 = @(x) model(p0, x);
+	r.f = @(x) model(r.p, x);
 
 	p = r.p;
 end
