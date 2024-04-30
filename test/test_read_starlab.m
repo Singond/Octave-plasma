@@ -121,3 +121,12 @@
 %!   56.937   1.895e-05
 %!   70.957   1.225e-05
 %!   109.076  4.340e-06]);
+
+## Reads truncated files (those with less points than specified
+## in header), but displays a warning.
+%!warning <nonempty values in channel A but header states>
+%! d = read_starlab("data/starlab/truncated-data.txt");
+%! assert(d(1,1), 0);
+%! assert(d(1,2), 3.21e-5);
+%! assert(d(end,1), 0.917);
+%! assert(d(end,2), 3.08e-5);

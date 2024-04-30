@@ -203,14 +203,14 @@ function varargout = read_starlab(varargin)
 	for k = 1:length(ch);
 		oversum = sum(over(:,k+1));
 		if (oversum != ch(k).overrange)
-			error("read_starlab: Found %d 'Over' values in channel %s but header states %d",
+			warning("read_starlab: Found %d 'Over' values in channel %s but header states %d",
 				oversum, ch(k).id, ch(k).overrange);
 		endif
 
 		emptysum = sum(empty(:,k+1));
 		nonempty = rows(cdata) - emptysum - oversum;
 		if (nonempty != ch(k).pulses)
-			error("read_starlab: Found %d nonempty values in channel %s but header states %d",
+			warning("read_starlab: Found %d nonempty values in channel %s but header states %d",
 				nonempty, ch(k).id, ch(k).pulses);
 		endif
 	endfor

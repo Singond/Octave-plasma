@@ -2,6 +2,15 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[Unreleased]
+------------
+### Fixed
+- Enabled `read_starlab` to read truncated data files, ie. files which
+  have less data points than what the header says.
+  Apparently, such data files can occur from time to time.
+  Previously, the function threw an error if such a file was encountered,
+  now it will only display a warning and return what data was found.
+
 [0.7.1] - 2024-03-31
 --------------------
 ### Fixed

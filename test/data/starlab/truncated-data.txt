@@ -1,0 +1,82 @@
+;PC Software:StarLab Version 3.72 Build 3
+! ******* Warning: Do not modify this file. Changes may prevent   ********
+! ******* the StarLab Log reader from opening the file correctly. ********
+;Logged:18/08/2022 at 18:19:25
+;File Version:5
+;Time Resolution:1 microseconds
+;Graph Mode:Merge
+;Graph Type:Line
+;Notes:                                                            
+
+;Channel A:Vega Pyroelectric PE9 (s/n:574745)  VG2.54 (s/n:547613)
+
+;Channel A:Details
+;Name:PE9
+;Graph Color:RGB(14,104,168)
+;Units:J
+;Settings:Measuring:Energy
+;Settings:Wavelength:206
+;Settings:Range:200uJ
+;Settings:Diffuser:N/A
+;Settings:Pulse Width:30uS
+;Settings:Threshold:N/A
+
+;Channel A:Statistics
+;Min:27.20uJ             
+;Max:35.00uJ             
+;Average:31.69uJ             
+;Std.Dev.:1.039uJ             
+;Overrange:0                   
+;Total Pulses:1141                
+;--------------------
+
+
+;First Pulse Arrived : 18/08/2022 at 18:19:26
+  Timestamp   	  Channel A  	
+         0.000	  3.210e-05 	
+         0.018	  3.210e-05 	
+         0.037	  3.240e-05 	
+         0.059	  3.330e-05 	
+         0.079	  3.240e-05 	
+         0.100	  3.230e-05 	
+         0.117	  3.230e-05 	
+         0.138	  3.330e-05 	
+         0.157	  3.450e-05 	
+         0.179	  3.270e-05 	
+         0.200	  3.170e-05 	
+         0.217	  3.220e-05 	
+         0.237	  3.330e-05 	
+         0.258	  3.320e-05 	
+         0.279	  3.260e-05 	
+         0.299	  3.210e-05 	
+         0.318	  3.240e-05 	
+         0.337	  3.190e-05 	
+         0.359	  3.130e-05 	
+         0.379	  3.260e-05 	
+         0.399	  3.140e-05 	
+         0.417	  3.230e-05 	
+         0.439	  3.220e-05 	
+         0.459	  3.200e-05 	
+         0.480	  3.210e-05 	
+         0.499	  3.280e-05 	
+         0.518	  3.160e-05 	
+         0.537	  3.200e-05 	
+         0.559	  3.140e-05 	
+         0.579	  3.130e-05 	
+         0.600	  3.320e-05 	
+         0.618	  3.190e-05 	
+         0.637	  3.140e-05 	
+         0.659	  3.030e-05 	
+         0.679	  3.140e-05 	
+         0.697	  3.070e-05 	
+         0.717	  2.940e-05 	
+         0.737	  3.070e-05 	
+         0.759	  2.970e-05 	
+         0.780	  3.120e-05 	
+         0.800	  3.180e-05 	
+         0.817	  3.180e-05 	
+         0.837	  3.210e-05 	
+         0.858	  3.080e-05 	
+         0.880	  3.190e-05 	
+         0.898	  3.190e-05 	
+         0.917	  3.080e-05 	
