@@ -2,6 +2,11 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.8.1] - 2024-05-02
+--------------------
+### Added
+- Warning IDs missing in `fit_decay`.
+
 [0.8.0] - 2024-04-30
 --------------------
 ### Fixed
