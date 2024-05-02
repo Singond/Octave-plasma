@@ -145,7 +145,8 @@ function x = _fit_decay(t, in)
 	s = struct();
 	[~, s.beta, s.cvg, s.iter] = leasqr(t, in, b0, model_simple, [], 30);
 	if (!s.cvg)
-		warning("Convergence not reached after %d iterations.", s.iter);
+		warning("singon-plasma:convergence",...
+			"Convergence not reached after %d iterations.", s.iter);
 	end
 	s.f = @(t) model_simple(t, s.beta);
 	s.tau = s.beta(2);
@@ -156,7 +157,8 @@ function x = _fit_decay(t, in)
 	s = struct();
 	[~, s.beta, s.cvg, s.iter] = leasqr(t, in, b0, model_yconst, [], 30);
 	if (!s.cvg)
-		warning("Convergence not reached after %d iterations.", s.iter);
+		warning("singon-plasma:convergence",...
+			"Convergence not reached after %d iterations.", s.iter);
 	end
 	s.f = @(t) model_yconst(t, s.beta);
 	s.tau = s.beta(2);
@@ -169,7 +171,8 @@ function x = _fit_decay(t, in)
 	[inm, s.beta, s.cvg, s.iter, s.cor, s.cov]...
 		= leasqr(t, in, b0, model_simple, [], 30);
 	if (!s.cvg)
-		warning("Convergence not reached after %d iterations.", s.iter);
+		warning("singon-plasma:convergence",...
+			"Convergence not reached after %d iterations.", s.iter);
 	end
 	s.f = @(t) model_simple(t, s.beta);
 	s.dof = length(in) - length(s.beta);
