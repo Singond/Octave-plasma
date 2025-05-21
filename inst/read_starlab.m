@@ -106,7 +106,20 @@ function varargout = read_starlab(varargin)
 	ch = struct();
 	try
 		assert(startsw(fgetl(f), ";PC Software:StarLab Version"));
-		fskipl(f, 9);
+		while (!isempty(line = fgetl(f)))
+			[field, value] = strtok(line, ":");
+			value = value(2:end);
+			switch (field)
+				case ";Logged"
+					meta.datetimestr = value;
+				case ";File Version"
+					meta.fileversion = value;
+				case ";Time Resolution"
+					meta.timeresolution = value;
+				case ";Notes"
+					meta.notes = value;
+			end
+		end
 
 		## Find number of channels and their names
 		k = 1;

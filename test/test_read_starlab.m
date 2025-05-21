@@ -1,5 +1,8 @@
 %!test
 %! [d, m] = read_starlab("data/starlab/energy.txt");
+%! assert(m.datetimestr, "18/08/2022 at 18:19:25");
+%! assert(m.fileversion, "5");
+%! assert(m.timeresolution, "1 microseconds");
 %! assert(m.channels(1).name, "PE9");
 %! assert(m.channels(1).units, "J");
 %! assert(size(d), [1141, 2]);
@@ -130,3 +133,16 @@
 %! assert(d(1,2), 3.21e-5);
 %! assert(d(end,1), 0.917);
 %! assert(d(end,2), 3.08e-5);
+
+## Reads older file versions
+%!test
+%! [d, m] = read_starlab("data/starlab/header-3.20.9.txt");
+%! assert(m.datetimestr, "01/07/2019 at 11:17:12");
+%! assert(m.fileversion, "5");
+%! assert(m.channels(1).name, "PE9");
+%! assert(m.channels(1).units, "J");
+%! assert(size(d), [20, 2]);
+%! assert(d(1,1), 0);
+%! assert(d(1,2), 1.529e-5);
+%! assert(d(end,1), 0.634);
+%! assert(d(end,2), 1.613e-5);

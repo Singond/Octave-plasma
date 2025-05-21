@@ -2,6 +2,15 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.8.2] - 2025-05-22
+--------------------
+### Fixed
+- Reading certain (older?) files with `read_starlab`.
+  The assumed header structure was made less strict to allow for missing
+  lines in the first block (like "Time Resolution" in version 3.20).
+  As a side effect of this change, the function now reads (and returns)
+  additional metadata values like date created, file version and notes.
+
 [0.8.1] - 2024-05-02
 --------------------
 ### Added
