@@ -2,6 +2,12 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[Unreleased]
+------------
+### Changed
+- Renamed function `eedffit` to `fit_eedf` to make it more in line
+  with the other fitting functions.
+
 [0.8.2] - 2025-05-22
 --------------------
 ### Fixed

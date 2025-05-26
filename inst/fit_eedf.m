@@ -1,12 +1,13 @@
 ## -*- texinfo -*-
-## @deftypefn  {} {[@var{mb}, @var{dr}, @var{gen}] =} eedffit (@var{E}, @var{f})
+## @deftypefn  {} {[@var{mb}, @var{dr}, @var{gen}] =} fit_eedf (@var{E}, @var{f})
 ##
 ## Fit common shapes of electron energy distribution function (EEDF) to data.
 ##
-## Data is given as the vector of electron energies @var{E} and the vector
+## Data is given as a vector of electron energies @var{E} and a vector
 ## of corresponding values of the distribution function @var{f}.
 ##
-## Each return value corresponds to a fit of a single shape.
+## Each return value corresponds to a fit of a single distribution
+## as listed below:
 ##
 ## @table @var
 ## @item mb
@@ -61,7 +62,7 @@
 ## @end deftypefn
 
 ## Author: Jan Slany <singond@seznam.cz>
-function [mb, dr, gen] = eedffit(E, f)
+function [mb, dr, gen] = fit_eedf(E, f)
 	pkg load optim;
 
 	persistent elemcharge = 1.602177e-19;    # Elementary charge [C]
@@ -228,7 +229,7 @@ endfunction
 %! b = 4;
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-E ./ b) + 0.4 * noise;
-%! [mb, ~, gen] = eedffit(E, f);
+%! [mb, ~, gen] = fit_eedf(E, f);
 %! clear -g verbose;
 %! # assert(mbl.a,     a, 0.8);
 %! # assert(mbl.b,     b, 0.6);
@@ -249,7 +250,7 @@ endfunction
 %! a = 7;
 %! b = 4;
 %! f = (a) .* sqrt(E) .* exp(-E ./ b) + 0.4 * known_noise;
-%! [mb, ~, gen] = eedffit(E, f);
+%! [mb, ~, gen] = fit_eedf(E, f);
 %! clear -g verbose;
 %! # assert(mbl.a,     6.9084, 1e-4);
 %! # assert(mbl.b,     4.0096, 1e-4);
@@ -268,7 +269,7 @@ endfunction
 %! b = 8;
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^2) + 0.01 * noise;
-%! [~, dr, gen] = eedffit(E, f);
+%! [~, dr, gen] = fit_eedf(E, f);
 %! clear -g verbose;
 %! # assert(drl.a,     a, 0.02);
 %! # assert(drl.b,     b, 0.01);
@@ -289,7 +290,7 @@ endfunction
 %! a = 7;
 %! b = 8;
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^2) + 0.01 * known_noise;
-%! [~, dr, gen] = eedffit(E, f);
+%! [~, dr, gen] = fit_eedf(E, f);
 %! clear -g verbose;
 %! # assert(drl.a,     6.9861, 1e-4);
 %! # assert(drl.b,     8.0061, 1e-4);
@@ -309,7 +310,7 @@ endfunction
 %! k = 2.6;
 %! noise = (rand(s) - 0.5);
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^k) + 0.4 * noise;
-%! [~, ~, gen] = eedffit(E, f);
+%! [~, ~, gen] = fit_eedf(E, f);
 %! clear -g verbose;
 %! assert(gen.a,     a, 0.04);
 %! assert(gen.b,     b, 0.03);
@@ -324,7 +325,7 @@ endfunction
 %! b = 12;
 %! k = 2.6;
 %! f = (a) .* sqrt(E) .* exp(-(E ./ b).^k) + 0.4 * known_noise;
-%! [~, ~, gen] = eedffit(E, f);
+%! [~, ~, gen] = fit_eedf(E, f);
 %! clear -g verbose;
 %! assert(gen.a,      7.0029, 1e-4);
 %! assert(gen.b,     11.9914, 1e-4);
