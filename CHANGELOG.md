@@ -2,8 +2,15 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
-[Unreleased]
-------------
+[0.9.0] - 2025-06-13
+--------------------
+### Added
+- Helper function `load_princeton_spe` to load related image files
+  and do some basic processing on them.
+- Function to compute mean image intensity, `img_intensity`.
+- Several functions for specifying image masks, see `drawpolygon`
+  and `drawellipse`.
+
 ### Changed
 - Renamed function `eedffit` to `fit_eedf` to make it more in line
   with the other fitting functions.
