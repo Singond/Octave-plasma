@@ -95,12 +95,12 @@ function x = load_princeton_spe(varargin)
 		x.img = correct_image(x.img, x.dark);
 	elseif (strcmp(dark, args.dark))
 		%% Filename was given exactly
-		error("load_data: Cannot find file %s", dark);
+		error("load_princeton_spe: Cannot find file %s", dark);
 	elseif (!isempty(args.dark))
 		%% Filename was given as pattern: allow missing files
 		x.dark = [];
 		x.darkm = [];
-		warning("load_data: No dark image for %s", args.basename);
+		warning("load_princeton_spe: No dark image for %s", args.basename);
 	endif
 
 	%% Correct for number of accumulations
