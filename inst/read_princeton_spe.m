@@ -76,8 +76,8 @@
 ## the data based on the information in the header, while guessing the
 ## amount of metadata between frames from the total size.
 ## This mode of operation is indicated by a warning message.
-## Note that this is a hack at best and errors are to be expected.
-## @end deftypefn
+## Note that this is a hack at best and errors are to be expected.
+## @end deftypefn
 function [img, D] = read_princeton_spe(file)
 	cleanup = [];
 
@@ -95,7 +95,7 @@ function [img, D] = read_princeton_spe(file)
 	[~, name, ext] = fileparts(filename);
 	basename = [name ext];
 
-	## Parse header (most values may be empty in SPE 3.x)
+	## Parse header (most values may be empty in SPE 3.x)
 	D = struct();
 	try
 		fseek(f, 20);
@@ -140,7 +140,7 @@ function [img, D] = read_princeton_spe(file)
 		D.version = fread(f, 1, "float32");
 	catch err
 		err.message = sprintf(
-			"read_princeton_spe: Bad SPE header in %s: %s",
+			"read_princeton_spe: Bad SPE header in %s: %s",
 			basename, err.message);
 		rethrow(err);
 	end
@@ -151,8 +151,8 @@ function [img, D] = read_princeton_spe(file)
 	end
 
 	## Read data.
-	## Data is in row-major order, Octave expects column-major.
-	## Transpose each frame to fix this.
+	## Data is in row-major order, Octave expects column-major.
+	## Transpose each frame to fix this.
 	if (D.version < 3)
 		fseek(f, 4100);
 		framesize = D.xdim * D.ydim;
@@ -164,7 +164,7 @@ function [img, D] = read_princeton_spe(file)
 		assert(D.footeroffset != 0);
 		warning("read_princeton_spe: Reading SPE 3.x in compatibility mode. Errors may occur.\n");
 
-		## Attempt to determine metadata size between frames
+		## Attempt to determine metadata size between frames
 		stride = (D.footeroffset - 4100) / D.numframes;
 		framesize = D.xdim * D.ydim;
 		skip = stride - framesize * datatypesize;
@@ -184,7 +184,7 @@ function [img, D] = read_princeton_spe(file)
 			fseek(f, skip, SEEK_CUR);
 		endfor
 	else
-		## Properly parsing SPE3.x data requires parsing the XML footer,
+		## Properly parsing SPE3.x data requires parsing the XML footer,
 		## which is not implemented in Octave.
 		error("read_princeton_spe: Reading SPE 3.x not implemented yet.");
 	end

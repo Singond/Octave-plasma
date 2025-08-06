@@ -30,7 +30,7 @@ function [img, info] = correct_image(img, dark)
 
 	## TODO: Eliminate outliers?
 
-	## Subtract dark image, using the mean if there are more
+	## Subtract dark image, using the mean if there are more
 	dark = mean(dark, 3);
 	img -= dark;
 	neg = img < 0;

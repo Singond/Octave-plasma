@@ -98,7 +98,7 @@ function plot_fit_decay(varargin)
 			ye = fitk.fite.f(xx);    # exponential fit
 		end
 
-		## Limit fitted functions to similar y-range as data
+		## Limit fitted functions to similar y-range as data
 		if (strcmp(get(gca, "yscale"), "log"))
 			ymin = min(yk(yk > 0));
 			ml = (ymin * 0.1) < yl & yl < (ymax * 10);

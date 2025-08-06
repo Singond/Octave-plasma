@@ -134,7 +134,7 @@
 %! assert(d(end,1), 0.917);
 %! assert(d(end,2), 3.08e-5);
 
-## Reads older file versions
+## Reads older file versions
 %!test
 %! [d, m] = read_starlab("data/starlab/header-3.20.9.txt");
 %! assert(m.datetimestr, "01/07/2019 at 11:17:12");

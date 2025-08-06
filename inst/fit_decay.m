@@ -37,7 +37,7 @@
 ##
 ## If instead of @var{x} and @var{y} a single struct argument @var{s}
 ## is provided, use its fields @code{@var{s}.t} and @code{@var{s}.in}
-## as the arguments @var{x} and @var{y}, respectively,
+## as the arguments @var{x} and @var{y}, respectively,
 ## and put the fields @code{fitl}, @code{fite} and @code{fitb} directly
 ## into a copy of @var{s}, which is returned.
 ## @end deftypefn
@@ -101,7 +101,7 @@ function r = fit_decay(varargin)
 			error("fit_decay: Incompatible dimensions of X and Y");
 		end
 
-		## Move dimension DIM to the beginning
+		## Move dimension DIM to the beginning
 		dims = 1:ndims(in);
 		otherdims = dims(dims != dim);
 		in = permute(in, [dim otherdims]);

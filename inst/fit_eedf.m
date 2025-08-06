@@ -70,7 +70,7 @@ function [mb, dr, gen] = fit_eedf(E, f)
 	c = struct();
 	c.Tscale = elemcharge / boltzmann;
 
-	## Fit Maxwell-Boltzmann distribution
+	## Fit Maxwell-Boltzmann distribution
 	if (isargout(1))
 		mbl = fit_mb_lin(E, f, c);
 		try
@@ -83,7 +83,7 @@ function [mb, dr, gen] = fit_eedf(E, f)
 		end_try_catch
 	endif
 
-	## Fit Druyvesteyn distribution
+	## Fit Druyvesteyn distribution
 	if (isargout(2) || isargout(3))
 		drl = fit_dr_lin(E, f, c);
 		try
@@ -96,7 +96,7 @@ function [mb, dr, gen] = fit_eedf(E, f)
 		end_try_catch
 	endif
 
-	## Fit generalized distribution
+	## Fit generalized distribution
 	if (isargout(3))
 		try
 			beta0 = [drl.a drl.b 2];
@@ -107,7 +107,7 @@ function [mb, dr, gen] = fit_eedf(E, f)
 	endif
 endfunction
 
-## Fit Maxwell-Boltzmann distribution (linearized).
+## Fit Maxwell-Boltzmann distribution (linearized).
 ## f(E) = a * sqrt(E) * exp(-E/b)
 function F = fit_mb_lin(E, f, c)
 	beta = polyfit(E, log(f) - log(E)/2, 1);
@@ -119,7 +119,7 @@ function F = fit_mb_lin(E, f, c)
 	F.T = F.b * c.Tscale;
 endfunction
 
-## Fit Maxwell-Boltzmann distribution non-linearly.
+## Fit Maxwell-Boltzmann distribution non-linearly.
 ## f(E) = a * sqrt(E) * exp(-E/b)
 function F = fit_mb(E, f, beta0, c)
 	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-E./beta(2));
@@ -145,7 +145,7 @@ function F = fit_mb(E, f, beta0, c)
 	endif
 endfunction
 
-## Fit Druyvesteyn distribution (linearized).
+## Fit Druyvesteyn distribution (linearized).
 ## f(E) = a * sqrt(E) * exp(-(E/b)^2)
 function F = fit_dr_lin(E, f, c)
 	beta = polyfit(E, log(f) - log(E)/2, logical([1 0 1]));
@@ -157,7 +157,7 @@ function F = fit_dr_lin(E, f, c)
 	F.T = F.b * c.Tscale;
 endfunction
 
-## Fit Druyvesteyn distribution non-linearly.
+## Fit Druyvesteyn distribution non-linearly.
 ## f(E) = a * sqrt(E) * exp(-(E/b)^2)
 function F = fit_dr(E, f, beta0, c)
 	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-(E./beta(2)).^2);
@@ -183,7 +183,7 @@ function F = fit_dr(E, f, beta0, c)
 	endif
 endfunction
 
-## Fit generalized distribution.
+## Fit generalized distribution.
 ## f(E) = a * sqrt(E) * exp(-(E/b)^c)
 function F = fit_gen(E, f, beta0, c)
 	model = @(E, beta) sqrt(E) .* beta(1) .* exp(-(E./beta(2)).^beta(3));

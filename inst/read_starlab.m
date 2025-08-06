@@ -67,7 +67,7 @@
 ## valid number in the respective column.
 ##
 ## The second return value @var{meta} is a struct with the metadata
-## read from the file header.
+## read from the file header.
 ##
 ## In the last form, return the data separately for each channel.
 ## Each of the return values @var{data_n} is a two column matrix,
@@ -171,7 +171,7 @@ function varargout = read_starlab(varargin)
 		meta.channels = ch;
 	catch err
 		err.message = sprintf(
-			"read_starlab: Bad file header in %s: %s",
+			"read_starlab: Bad file header in %s: %s",
 			basename, err.message);
 		rethrow(err);
 	end
@@ -184,7 +184,7 @@ function varargout = read_starlab(varargin)
 		return;
 	end
 
-	## Read data
+	## Read data
 	fmt = repmat("%s ", [1 length(ch) + 1]);
 	## Newer Octave versions read another (empty) element
 	## after the trailing tab:
@@ -199,7 +199,7 @@ function varargout = read_starlab(varargin)
 	over = false(size(cdata));
 	over(:,2:end) = strcmp(cdata(:,2:end), "Over       ");
 	if (strcmp(args.overvalue, "max"))
-		## Substitute overs with maximum in that column
+		## Substitute overs with maximum in that column
 		cmax = max(data, [], 1);
 		m = over .* cmax;
 		data(over) = m(over);
