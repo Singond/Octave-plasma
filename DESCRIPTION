@@ -9,3 +9,4 @@ Categories: physics
 Url: https://github.com/Singond/Octave-plasma
 Tracker: https://github.com/Singond/Octave-plasma/issues
 Depends: optim
+License: MIT
