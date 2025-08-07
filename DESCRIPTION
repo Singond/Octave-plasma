@@ -6,3 +6,6 @@ Maintainer: Jan Slany <singond@seznam.cz>
 Title: Plasma physics toolkit
 Description: Utilities for plasma physics experiments.
 Categories: physics
+Url: https://github.com/Singond/Octave-plasma
+Tracker: https://github.com/Singond/Octave-plasma/issues
+Depends: optim
