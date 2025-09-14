@@ -3,14 +3,14 @@
 ## @deftypefnx {} {@var{R} =} lif.lifetime (@var{S}, @var{opts})
 ##
 ## Calculate the lifetime of exponential decay in each pixel of a series
-## of images @code{@var{S}.img} taken at times @code{@var{S}.t}.
+## of images @code{@var{S}.imgn} taken at times @code{@var{S}.t}.
 ##
 ## Return a copy of struct @var{S} with the following fields added:
 ##
 ## @table @code
 ## @item tau
 ## The lifetime at each pixel. This is an array with the size of the
-## first two dimensions of @code{@var{S}.img}.
+## first two dimensions of @code{@var{S}.imgn}.
 ##
 ## @item tausig
 ## The uncertainty of @code{tau}.
@@ -19,7 +19,7 @@
 ## Information about the fits in the same form as in @code{fit_decay}.
 ##
 ## @item imgsm
-## Image @code{@var{S}.img} smoothed by the @qcode{"smooth"} parameter.
+## Image @code{@var{S}.imgn} smoothed by the @qcode{"smooth"} parameter.
 ## @end table
 ##
 ## Additional input arguments @var{opts} are passed into @code{lifetime}.
