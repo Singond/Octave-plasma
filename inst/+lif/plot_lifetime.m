@@ -1,7 +1,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {} lif.plot_lifetime (@var{s})
 ## @deftypefnx {} {} lif.plot_lifetime (@var{s}, @var{param}, @var{value}, @dots{})
-## @deftypefnx {} {[@var{f1}, @var{f1}, @var{f1}] =} lif.plot_lifetime (@dots{})
+## @deftypefnx {} {[@var{f1}, @var{f2}, @var{f3}] =} lif.plot_lifetime (@dots{})
 ##
 ## Plot 2D lifetime data given in struct @var{s} as image and allow inspection
 ## of the underlying fits.
