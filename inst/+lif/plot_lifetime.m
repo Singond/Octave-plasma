@@ -25,10 +25,12 @@
 ## Following additional parameters @var{param} are supported:
 ##
 ## @table @code
-## @item displayrange
+## @item taurange
 ## The display range of the main plot (the range of the colorbar).
 ## This is a two-element vector giving the minimum and maximum of @code{tau}
 ## to be displayed. Values outside this range are clipped.
+## If empty (the default), the range is computed automatically as the
+## minimum and maximum value.
 ##
 ## @item colormap
 ## The colormap used by the image.
@@ -43,7 +45,7 @@
 ## @end deftypefn
 function [f1, f2, f3] = plot_lifetime(s, varargin)
 	p = inputParser;
-	p.addParameter("displayrange", []);
+	p.addParameter("taurange", []);
 	p.addParameter("colormap", []);
 	p.parse(varargin{:});
 
@@ -70,7 +72,7 @@ function [f1, f2, f3] = plot_lifetime(s, varargin)
 	axes(ax);
 	imshow(tau,
 		"xdata", s.xpos, "ydata", s.ypos,
-		"displayrange", p.Results.displayrange,
+		"displayrange", p.Results.taurange,
 		"colormap", cmap);
 	axis on;
 	set(ax, "ticklength", [0 0])
@@ -81,6 +83,7 @@ function [f1, f2, f3] = plot_lifetime(s, varargin)
 	f2 = figure("visible", "off");
 	f3 = figure("visible", "off");
 
+	## Add controls for fit inspection
 	figure(f1);
 	uicontrol("parent", f1,
 		"string", "Inspect fit",
