@@ -2,6 +2,25 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.10.0] - 2025-09-21
+---------------------
+### Added
+- MIT license.
+- Functions for processing lifetime in LIF experiments.
+  This includes the `lifetime` function
+  and all functions in the `lif` namespace, namely:
+    - `lif.align_energy`
+    - `lif.frame_pulse_energy`
+    - `lif.lifetime`
+    - `lif.lifetimex`
+    - `lif.plot_lifetime`
+    - `lif.plot_lifetimex`
+- Function to crop image data before processing.
+- The `info` to the struct used in calculating lifetime.
+  This is a list of strings describing the operations performed
+  on the struct to improve understanding how the current values
+  of its other fields were obtained.
+
 [0.9.0] - 2025-06-13
 --------------------
 ### Added
