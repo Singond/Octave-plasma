@@ -36,10 +36,9 @@ function [img, info] = correct_image(img, dark)
 	neg = img < 0;
 
 	if (nargout > 1)
-		s = statistics(img(neg));
-		info.max = -s(1);
-		info.mean = -s(6);
-		info.std = s(7);
+		info.max = -min(img(neg));
+		info.mean = -mean(img(neg));
+		info.std = std(img(neg));
 	end
 
 	## Clip negative values
