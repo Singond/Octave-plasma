@@ -37,6 +37,11 @@ function result = lifetime(S, varargin)
 		printf("Fitting lifetime to %s\n", s.name);
 		[s.tau, s.tausig, s.fits, s.imgsm] = lifetime(
 			s.imgn, s.t, 3, "limits", s.fitlim, varargin{:});
+		if (iscell(s.info))
+			s.info{end+1,1} = sprintf(
+				"Fitted lifetime to each pixel in range [%g, %g] of t",
+				s.fitlim);
+		end
 		result(end+1) = s;
 	end
 end

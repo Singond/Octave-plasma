@@ -86,6 +86,7 @@ function x = load_princeton_spe(varargin)
 	x.ypos = (1:size(x.img, 1))';
 	x.acc = x.imgm.accum;
 	x.readout = x.imgm.readouttime;
+	x.info = {["Loaded from " x.img_filename]};
 
 	%% Dark image
 	dark = strrep(args.dark, "*", args.basename);
@@ -93,6 +94,9 @@ function x = load_princeton_spe(varargin)
 		[x.dark, x.darkm] = read_princeton_spe(dark);
 		x.dark_filename = dark;
 		x.img = correct_image(x.img, x.dark);
+		x.info{end+1,1} = sprintf(
+			"Subtracted dark image (mean %g, std %g)",
+			mean(x.dark(:)), std(x.dark(:)));
 	elseif (strcmp(dark, args.dark))
 		%% Filename was given exactly
 		error("load_princeton_spe: Cannot find file %s", dark);
@@ -105,10 +109,15 @@ function x = load_princeton_spe(varargin)
 
 	%% Correct for number of accumulations
 	x.imgn = normalize_image_intensity(x.img, x.acc);
+	x.info{end+1,1} = sprintf(
+		"Normalized intensity to one accumulation (divided by %d)", x.acc);
 
 	%% Estimate times corresponding to each frame
 	if (args.triggerFrequency > 0)
 		x.imgt = (frametimes_princeton_spe(x.imgm, 1/args.triggerFrequency) +
 			args.triggerDelay);
+		x.info{end+1,1} = sprintf(
+			"Estimated frame times from frequency %g",
+			args.triggerFrequency);
 	end
 end

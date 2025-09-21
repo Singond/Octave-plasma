@@ -17,6 +17,11 @@ function r = normalize_image_intensity(varargin)
 	if (isstruct(varargin{1}))
 		r = varargin{1};
 		r.in = normalize_image_intensity(r.img, r.acc);
+		if (iscell(r.info))
+			r.info{end+1,1} = sprintf(
+				"Normalized intensity to one accumulation (divided by %d)",
+				r.acc);
+		end
 		return;
 	end
 

@@ -50,6 +50,11 @@ function result = lifetimex(S, varargin)
 		printf("Fitting lifetime to %s (x-resolved)\n", s.name);
 		[s.taux, s.tausigx, s.fitsx, s.imgsmx] = lifetime(
 			s.imgnx, s.t, 3, "limits", s.fitlim, varargin{:});
+		if (iscell(s.info))
+			s.info{end+1,1} = sprintf(
+				"Fitted lifetime to each column in range [%g, %g] of t",
+				s.fitlim);
+		end
 		result(end+1) = s;
 	end
 end
