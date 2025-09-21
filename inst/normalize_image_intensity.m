@@ -30,8 +30,10 @@ function r = normalize_image_intensity(varargin)
 	end
 	[raw, acc] = varargin{1:2};
 
-	validateattributes(raw, {"numeric"}, {}, 1);
-	validateattributes(acc, {"numeric"}, {}, 1);
+	validateattributes(raw, {"numeric"}, {},
+		"normalize_image_intensity", "RAW");
+	validateattributes(acc, {"numeric"}, {},
+		"normalize_image_intensity", "ACCUMS");
 
 	r = raw ./ acc;
 end
