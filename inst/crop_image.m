@@ -23,16 +23,19 @@ function x = crop_image(x, rows, cols, varargin)
 		end
 	end
 	x.img  = x.img (rows(1):rows(2), cols(1):cols(2), :);
-	x.imgn = x.imgn(rows(1):rows(2), cols(1):cols(2), :);
+	if (isfield(x, "imgn"))
+		x.imgn = x.imgn(rows(1):rows(2), cols(1):cols(2), :);
+	end
 	if (isfield(x, "dark"))
 		x.dark = x.dark(rows(1):rows(2), cols(1):cols(2), :);
 	end
 	x.xpos = x.xpos(cols(1):cols(2));
 	x.ypos = x.ypos(rows(1):rows(2));
-	if (iscell(x.info))
+	if (isfield(x, "info") && iscell(x.info))
 		x.info{end+1,1} = sprintf(
 			"Cropped image data to x = [%d, %d], y = [%d, %d]",
 			cols(1), cols(2), rows(1), rows(2));
+	end
 end
 
 %!shared s
