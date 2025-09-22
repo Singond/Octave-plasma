@@ -61,4 +61,11 @@ function [tau, tausig, fits, x] = lifetime(varargin)
 	## Select valid data points
 	tauvalid = arrayfun(@(a) a.fite.cvg, fits);
 	tau(!tauvalid) = NaN;
+
+	failed = sum(!tauvalid);
+	if (failed > 0)
+		warning("singon-plasma:convergence",
+			"lifetime: Fit failed for %d points out of %d\n",
+			failed, numel(tau));
+	end
 end
