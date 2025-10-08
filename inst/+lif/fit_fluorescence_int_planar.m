@@ -71,7 +71,7 @@ function r = fit1(x, L, pm = [])
 	try
 		[~, p, r.fite.cvg, r.fite.iter] = leasqr(L, x, p0,
 			@(L, p) lif.fluorescence_int_planar(L, p),
-			[], 30, wt, [], [], opts);
+			[], 30, wt, [], @dfitdp, opts);
 		if (!r.fite.cvg)
 			warning(
 				"fit_fluorescence_int_planar: Convergence not reached after %d iterations.\n",
@@ -87,6 +87,15 @@ function r = fit1(x, L, pm = [])
 	r.fite.a = p(1) .* p(2) ./ 2;
 	r.fite.b = p(2);
 	r.fite.f = @(L) lif.fluorescence_int_planar(L, p);
+end
+
+## Derivative of lif.fluorescence_int_planar
+function prt = dfitdp(L, f, p, dp, F, bounds)
+	bl = p(2) .* L;
+	blp1 = 1 + bl;
+	logblp1 = log(blp1);
+	prt(:,1) = 1 - logblp1 ./ bl;
+	prt(:,2) = p(1) .* (logblp1 ./ (p(2)^2 * L) - 1 ./ (p(2) .* blp1));
 end
 
 %!shared L, y
