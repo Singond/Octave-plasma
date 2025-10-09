@@ -2,6 +2,18 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[Unreleased]
+------------
+### Added
+- Functions for processing saturation in LIF experiments.
+  See the following functions for more information:
+  - `lif.saturation`
+  - `lif.saturationx`
+  - `lif.plot_saturation`
+  - `lif.plot_saturationx`
+  - `lif.fluorescence_int`
+  - `lif.fit_fluorescence_int`
+
 [0.10.0] - 2025-09-21
 ---------------------
 ### Added
