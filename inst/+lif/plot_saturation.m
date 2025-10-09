@@ -7,11 +7,11 @@
 ## inspection of the underlying fits.
 ##
 ## The struct @var{s} must be similar in structure to the return value
-## of @code{lif.saturation_*}.
+## of @code{lif.saturation}.
 ## In particular, it must contain the field @code{b}, which is the
 ## saturation parameter to be plotted, and @code{fits}, which must be a struct
 ## array of the same size as @code{b} and must be in the form returned
-## by @code{fit_fluorescence_int_*}.
+## by @code{fit_fluorescence_int}.
 ## The fields @code{xpos} and @code{ypos} must also be given.
 ##
 ## The main plot allows inspection of the fit leading to the value
@@ -45,7 +45,7 @@
 ## namely the main plot (@var{f1}),
 ## and the fit inspection plot (@var{f2}).
 ##
-## @seealso{lif.saturation_planar}
+## @seealso{lif.saturation}
 ## @end deftypefn
 function [f1, f2] = plot_saturation(s, varargin)
 	p = inputParser;
