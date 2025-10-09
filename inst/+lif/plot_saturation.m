@@ -37,8 +37,8 @@
 ##
 ## @item fitlabel
 ## A label used to identify the clicked point in the fit inspection plot.
-## This is a pattern evaluated using @code{sprintf} with two parameters:
-## the value of @code{a} and @code{b} at that point.
+## This is a pattern evaluated using @code{sprintf} with four parameters:
+## the values of @code{xpos}, @code{ypos}, @code{a} and @code{b} at that point.
 ## @end table
 ##
 ## The return values are figure handles to the resulting plots,
@@ -81,7 +81,7 @@ function [f1, f2] = plot_saturation(s, varargin)
 	grid off;
 	cb = colorbar("SouthOutside");
 
-	## Initialize new figures for fit inspection
+	## Initialize new figure for fit inspection
 	f2 = figure("visible", "off");
 
 	## Add controls for fit inspection
