@@ -1,3 +1,6 @@
+## -*- texinfo -*-
+##
+## @seealso{lif.saturationx}
 function result = saturation(S, varargin)
 	if (!isstruct(S))
 		print_usage;

@@ -45,7 +45,7 @@
 ## namely the main plot (@var{f1}),
 ## and the fit inspection plot (@var{f2}).
 ##
-## @seealso{lif.saturation}
+## @seealso{lif.saturation, lif.plot_saturationx}
 ## @end deftypefn
 function [f1, f2] = plot_saturation(s, varargin)
 	p = inputParser;
