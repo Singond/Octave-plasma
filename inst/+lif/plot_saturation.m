@@ -94,7 +94,7 @@ function [f1, f2] = plot_saturation(s, varargin)
 	uicontrol("parent", f1,
 		"string", "Clear fits",
 		"position", [140 10 120 30],
-		"callback", @(a,b) arrayfun(@clf, [f2]));
+		"callback", @(a,b) clf(f2));
 end
 
 function inspect_fit(s, fits, f1, f2, opts)
