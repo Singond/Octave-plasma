@@ -70,8 +70,8 @@ function r = fit1(x, L, pm = [])
 	# warning off backtrace local;
 	try
 		[~, p, r.fite.cvg, r.fite.iter] = leasqr(L, x, p0,
-			@(L, p) lif.fluorescence_int_planar(L, p),
-			[], 30, wt, [], @dfitdp, opts);
+			@fluorint,
+			[], 30, wt, [], @dfluorintdp, opts);
 		if (!r.fite.cvg)
 			warning(
 				"fit_fluorescence_int_planar: Convergence not reached after %d iterations.\n",
@@ -86,11 +86,19 @@ function r = fit1(x, L, pm = [])
 	end
 	r.fite.a = p(1) .* p(2) ./ 2;
 	r.fite.b = p(2);
-	r.fite.f = @(L) lif.fluorescence_int_planar(L, p);
+	r.fite.f = @(L) lif.fluorescence_int_planar(L, r.fite.a, r.fite.b);
 end
 
-## Derivative of lif.fluorescence_int_planar
-function prt = dfitdp(L, f, p, dp, F, bounds)
+## Private variant of lif.fluorescence_int_planar where the two
+## parameters are grouped differently.
+## This should be equivalent to
+## lif.fluorescence_int_planar(L, p(1) .* p(2) ./ 2, p(2));
+function F = fluorint(L, p)
+	F = p(1) - (p(1)/p(2)) * log(1 + p(2) * L) ./ L;
+end
+
+## Derivative of fluorint
+function prt = dfluorintdp(L, f, p, dp, F, bounds)
 	bl = p(2) .* L;
 	blp1 = 1 + bl;
 	logblp1 = log(blp1);

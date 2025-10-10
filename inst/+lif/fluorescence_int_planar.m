@@ -1,3 +1,3 @@
-function F = fluorescence_int_planar(Ly, p)
-	F = p(1) - (p(1)/p(2)) * log(1 + p(2) * Ly) ./ Ly;
+function F = fluorescence_int_planar(Ly, a, b)
+	F = 2 * (a ./ b) .* (1 - log(1 + b .* Ly) ./ (b .* Ly));
 end
