@@ -121,3 +121,8 @@ end
 %! [af, bf, fit] = lif.fit_fluorescence_int(L, y, opts);
 %! assert(af, 4, 1e-8);
 %! assert(bf, 0.2, 1e-8);
+
+%!test
+%! [af, bf, fit] = lif.fit_fluorescence_int(L, y, "geometry", "planar", "progress");
+%! assert(af, 4, 1e-8);
+%! assert(bf, 0.2, 1e-8);
