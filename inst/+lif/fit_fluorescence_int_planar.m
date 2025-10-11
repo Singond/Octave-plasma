@@ -11,7 +11,7 @@
 ##   lif.fit_fluorescence_int_planar (@dots{})
 ##
 ## Fit @code{lif.fluorescence_int_planar} to fluorescence data @var{F}
-## detected for laser energies @var{L}.
+## detected at laser energies @var{L}.
 ##
 ## If the optional parameter @qcode{"smooth"} is given, first smooth
 ## the data @var{F} by convolution with the given @var{kernel}.

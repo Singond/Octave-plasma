@@ -1,7 +1,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{F} =} lif.fluorescence_int_planar (@var{L}, @var{a}, @var{b})
 ##
-## Calculate the fluorescence induced by a planar laser beam,
+## Calculate the fluorescence induced by a planar laser beam of energy @var{L},
 ## integrated in direction perpendicular to the beam.
 ##
 ## This is the fluorescence signal that would be detected by a sensor
