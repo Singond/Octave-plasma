@@ -26,7 +26,7 @@
 ##
 ## By default, assume that the laser beam is a planar sheet.
 ## This can be changed by the parameter @qcode{"geometry"}.
-## Valid value is @qcode{"planar"} (the default).
+## Valid values are @qcode{"planar"} (the default) and @qcode{"cylindrical"}.
 ##
 ## With matrix argument @var{F} (and possibly @var{L}), fit the function
 ## to each column. If the optional argument @var{dim} is given,
@@ -64,7 +64,7 @@
 ## @seealso{lif.fit_fluorescence_int_planar}
 ## @end deftypefn
 function varargout = fit_fluorescence_int(varargin)
-	persistent geoms = {"planar"};
+	persistent geoms = {"planar", "cylindrical"};
 
 	## Filter the "geometry" parameter from arguments to be passed on
 	k = 0;
@@ -92,6 +92,9 @@ function varargout = fit_fluorescence_int(varargin)
 		case "planar"
 			varargout = nthargout([1:nargout],
 				@lif.fit_fluorescence_int_planar, args{:});
+		case "cylindrical"
+			varargout = nthargout([1:nargout],
+				@lif.fit_fluorescence_int_cylindrical, args{:});
 		otherwise
 			error("Unknown geometry %s\n", geometry);
 	end
