@@ -11,7 +11,7 @@ This is a changelog for the Octave `singon-plasma` package.
   - `lif.saturationx`
   - `lif.plot_saturation`
   - `lif.plot_saturationx`
-  - `lif.fluorescence_int`
+  - `lif.fluorescence_int_*`
   - `lif.fit_fluorescence_int`
 - Function for merging several LIF data series
   (`lif.merge_experiments`).
