@@ -2,6 +2,12 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[0.11.1] - 2025-10-12
+---------------------
+### Fixed
+- Visibility of the `ProgressMeter` class, which could not be found
+  in the `private` directory.
+
 [0.11.0] - 2025-10-12
 ---------------------
 ### Added
