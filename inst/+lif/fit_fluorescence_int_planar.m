@@ -1,3 +1,45 @@
+## -*- texinfo -*-
+## @deftypefn  {} {[@var{a}, @var{b}] =} lif.fit_fluorescence_int_planar @
+##   (@var{L}, @var{F})
+## @deftypefnx {} {[@var{a}, @var{b}] =} lif.fit_fluorescence_int_planar @
+##   (@var{L}, @var{F}, @var{dim})
+## @deftypefnx {} {[@var{a}, @var{b}] =} lif.fit_fluorescence_int_planar @
+##   (@dots{}, @qcode{"smooth"}, @var{kernel})
+## @deftypefnx {} {[@var{a}, @var{b}] =} lif.fit_fluorescence_int_planar @
+##   (@dots{}, @qcode{"progress"})
+## @deftypefnx {} {[@var{a}, @var{b}, @var{fit}, @var{Fmod}] =} @
+##   lif.fit_fluorescence_int_planar (@dots{})
+##
+## Fit @code{lif.fluorescence_int_planar} to fluorescence data @var{F}
+## detected for laser energies @var{L}.
+##
+## If the optional parameter @qcode{"smooth"} is given, first smooth
+## the data @var{F} by convolution with the given @var{kernel}.
+## The sum of @var{kernel} need not be equal to one,
+## it will be normalized automatically.
+##
+## The switch @qcode{"progress"} turns on printing messages with progress
+## when number of series is large.
+##
+## Return the parameters @var{a} and @var{b} which minimize the sum
+## of squared residuals
+## @code{lif.fluorescence_int_planar(@var{L}, @var{a}, @var{b}) - @var{F}}.
+##
+## The optional return value @var{fit} is a struct with additional
+## information about the fit:
+## Its field @code{@var{fit}.fitl} (also a struct) describes
+## the preliminary polynomial fit, while @code{@var{fit}.fite}
+## describes the final fit of the true function.
+## In particular, @code{@var{fit}.fite.cvg} is a flag indicating
+## whether the fit converged and @code{@var{fit}.fite.iter} is the number
+## of iterations.
+##
+## The return value @var{Fmod} returns data actually used for the fit,
+## that is, the argument @var{F} after the modification done by the
+## @qcode{"smooth"} parameter.
+##
+## @seealso{lif.fluorescence_int_planar}
+## @end deftypefn
 function [a, b, fit, x] = fit_fluorescence_int_planar(varargin)
 	pkg load optim;
 	pkg load singon-ext;
