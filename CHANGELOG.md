@@ -2,8 +2,8 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
-[Unreleased]
-------------
+[0.11.0] - 2025-10-12
+---------------------
 ### Added
 - Functions for processing saturation in LIF experiments.
   See the following functions for more information:
