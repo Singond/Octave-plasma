@@ -187,7 +187,8 @@ end
 
 %!shared x, y
 %! x = (0:7)';
-%! y = [87 95 100 * exp(-0.8 * (0:5))]';
+%! tau = 1.25;
+%! y = [87 95 100 * exp(-(1 ./ tau) .* (0:5))]';
 
 ## Fit whole data.
 ## The value -0.60438927 is equal to polyfit(x, log(y), 1)(1).
@@ -199,12 +200,21 @@ end
 ## of the exponential data and should provide an exact result).
 %!test
 %! fit = fit_decay(x, y, "xmin", "peak");
-%! assert(fit.fitl.beta(1), -0.8, 1e-12);
+%! assert(fit.fitl.tau, 1.25, 1e-12);
+%! assert(fit.fitb.tau, 1.25, 1e-12);
+%! assert(fit.fite.tau, 1.25, 1e-12);
 
 ## Fit the data with x >= 2, which is the same data as above.
 %!test
 %! fit = fit_decay(x, y, "xmin", 2);
-%! assert(fit.fitl.beta(1), -0.8, 1e-12);
+%! assert(fit.fitl.tau, 1.25, 1e-12);
+%! assert(fit.fitb.tau, 1.25, 1e-12);
+%! assert(fit.fite.tau, 1.25, 1e-12);
+
+## Fit data with background
+%!test
+%! fit = fit_decay(x, y + 5, "xmin", 2);
+%! assert(fit.fitb.tau, 1.25, 1e-12);
 
 ## Use a struct argument and preserve its fields.
 %!test
