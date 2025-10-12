@@ -65,18 +65,18 @@ function [fig_tau, fig_fit, fig_logfit] = plot_lifetimex(s, varargin)
 
 	## Initialize new figures for fit inspection
 	fig_fit = figure("visible", "off");
-	fig_logfit = figure("visible", "off");
+	add_toggle_logy(fig_fit, gca);
 
 	## Add controls for fit inspection
 	figure(fig_tau);
 	uicontrol("parent", fig_tau,
 		"string", "Inspect fit",
 		"position", [10 10 120 30],
-		"callback", @(a,b) inspect_fit(s, s.fitsx, fig_tau, fig_fit, fig_logfit));
+		"callback", @(a,b) inspect_fit(s, s.fitsx, fig_tau, fig_fit));
 	uicontrol("parent", fig_tau,
 		"string", "Clear fits",
 		"position", [140 10 120 30],
-		"callback", @(a,b) arrayfun(@clf, [fig_fit, fig_logfit]));
+		"callback", @(a,b) clf(fig_fit));
 end
 
 function inspect_fit(s, fits, f1, f2, f3)
@@ -89,6 +89,7 @@ function inspect_fit(s, fits, f1, f2, f3)
 		return;
 	end
 
+	fignew = !isfigure(f2);
 	figure(f2, "name", "Fit detail", "visible", "on");
 	hold on;
 	plot_fit_decay(s.t, s.imgnx, fits, "dim", 3, "idx", {1, xr},
@@ -96,13 +97,23 @@ function inspect_fit(s, fits, f1, f2, f3)
 		"label", sprintf("[%d] \\tau = %g ns", x, s.taux(1,xr)));
 	hold off;
 	legend show;
+	if (fignew)
+		add_toggle_logy(f2, gca);
+	end
+end
 
-	figure(f3, "name", "Fit detail (log)", "visible", "on");
-	set(gca, "yscale", "log");
-	hold on;
-	plot_fit_decay(s.t, s.imgnx, fits, "dim", 3, "idx", {1, xr},
-##		"only", {"fite"},
-		"label", sprintf("[%d] \\tau = %g ns", x, s.taux(1,xr)));
-	hold off;
-	legend show;
+function toggle_logy(h, evt, ax)
+	if (get(h, "value"))
+		set(ax, "yscale", "log");
+	else
+		set(ax, "yscale", "linear");
+	end
+end
+
+function add_toggle_logy(f, ax)
+	uicontrol("parent", f,
+		"style", "togglebutton",
+		"string", "Log scale",
+		"position", [10 10 120 30],
+		"callback", {@toggle_logy, ax});
 end

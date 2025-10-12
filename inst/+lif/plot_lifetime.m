@@ -79,23 +79,23 @@ function [f1, f2, f3] = plot_lifetime(s, varargin)
 	grid off;
 	cb = colorbar("SouthOutside");
 
-	## Initialize new figures for fit inspection
+	## Initialize new figure for fit inspection
 	f2 = figure("visible", "off");
-	f3 = figure("visible", "off");
+	add_toggle_logy(f2, gca);
 
-	## Add controls for fit inspection
+	## Add controls for fit inspection to main plot
 	figure(f1);
 	uicontrol("parent", f1,
 		"string", "Inspect fit",
 		"position", [10 10 120 30],
-		"callback", @(a,b) inspect_fit(s, s.fits, f1, f2, f3));
+		"callback", @(a,b) inspect_fit(s, s.fits, f1, f2));
 	uicontrol("parent", f1,
 		"string", "Clear fits",
 		"position", [140 10 120 30],
-		"callback", @(a,b) arrayfun(@clf, [f2 f3]));
+		"callback", @(a,b) cla(get(f2, "currentaxes"), "reset"));
 end
 
-function inspect_fit(s, fits, f1, f2, f3)
+function inspect_fit(s, fits, f1, f2)
 	figure(f1);
 	[x, y, btn] = ginput(1);
 	x = round(x);
@@ -108,18 +108,30 @@ function inspect_fit(s, fits, f1, f2, f3)
 		return;
 	end
 
+	fignew = !isfigure(f2);
 	figure(f2, "name", "Fit detail", "visible", "on");
 	hold on;
 	plot_fit_decay(s.t, s.imgsm, fits, "idx", {yr, xr}, "dim", 3,
 		"label", sprintf("[%d,%d] \\tau = %g ns", x, y, s.tau(yr,xr)));
 	legend show;
 	hold off;
+	if (fignew)
+		add_toggle_logy(f2, gca);
+	end
+end
 
-	figure(f3, "name", "Fit detail (log)", "visible", "on");
-	set(gca, "yscale", "log");
-	hold on;
-	plot_fit_decay(s.t, s.imgsm, fits, "idx", {yr, xr}, "dim", 3,
-		"label", sprintf("[%d,%d] \\tau = %g ns", x, y, s.tau(yr,xr)));
-	legend show;
-	hold off;
+function toggle_logy(h, evt, ax)
+	if (get(h, "value"))
+		set(ax, "yscale", "log");
+	else
+		set(ax, "yscale", "linear");
+	end
+end
+
+function add_toggle_logy(f, ax)
+	uicontrol("parent", f,
+		"style", "togglebutton",
+		"string", "Log scale",
+		"position", [10 10 120 30],
+		"callback", {@toggle_logy, ax});
 end
