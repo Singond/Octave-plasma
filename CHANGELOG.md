@@ -2,6 +2,11 @@ Changelog
 =========
 This is a changelog for the Octave `singon-plasma` package.
 
+[Unreleased]
+------------
+### Changed
+- Improved the performance of `lifetime`.
+
 [0.11.1] - 2025-10-12
 ---------------------
 ### Fixed
