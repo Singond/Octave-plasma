@@ -90,7 +90,9 @@ function x = load_princeton_spe(varargin)
 
 	%% Dark image
 	dark = strrep(args.dark, "*", args.basename);
-	if (isfile(dark))
+	if (isempty(args.dark))
+		## Skip loading dark entirely: do nothing
+	elseif (isfile(dark))
 		[x.dark, x.darkm] = read_princeton_spe(dark);
 		x.dark_filename = dark;
 		x.img = correct_image(x.img, x.dark);
@@ -100,7 +102,7 @@ function x = load_princeton_spe(varargin)
 	elseif (strcmp(dark, args.dark))
 		%% Filename was given exactly
 		error("load_princeton_spe: Cannot find file %s", dark);
-	elseif (!isempty(args.dark))
+	else
 		%% Filename was given as pattern: allow missing files
 		x.dark = [];
 		x.darkm = [];

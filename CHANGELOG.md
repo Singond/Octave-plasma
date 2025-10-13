@@ -12,6 +12,12 @@ This is a changelog for the Octave `singon-plasma` package.
   to the inspection figure, which enables switching to semilogarithmic
   scale and back.
 
+### Fixed
+- Error when no `"dark"` argument was given to `load_princeton_spe`.
+  Previously, the function would fail on opening the empty filename.
+  Now, leaving the argument empty will simply skip loading any dark
+  image.
+
 [0.11.1] - 2025-10-12
 ---------------------
 ### Fixed
