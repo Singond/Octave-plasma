@@ -6,6 +6,11 @@ This is a changelog for the Octave `singon-plasma` package.
 ------------
 ### Changed
 - Improved the performance of `lifetime`.
+- Inspecting fits in `lif.plot_lifetime` and `lif.plot_lifetimex` will
+  now open only one additional figure, containing the linear plot.
+  Instead of separate logarithmic plot, a toggle button has been added
+  to the inspection figure, which enables switching to semilogarithmic
+  scale and back.
 
 [0.11.1] - 2025-10-12
 ---------------------
