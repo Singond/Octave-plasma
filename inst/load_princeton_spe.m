@@ -104,7 +104,7 @@ function x = load_princeton_spe(varargin)
 		%% Filename was given as pattern: allow missing files
 		x.dark = [];
 		x.darkm = [];
-		warning("load_princeton_spe: No dark image for %s", args.basename);
+		warning("load_princeton_spe: No dark image for %s\n", args.basename);
 	endif
 
 	%% Correct for number of accumulations
