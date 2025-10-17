@@ -27,6 +27,22 @@
 ## @item dim
 ## Fit matrix @var{y} along dimension @qcode{"dim"} (see below).
 ##
+## @item bg
+## Value of background present in @var{y} in addition to the
+## exponentially decaying quantity.
+## This can be either a scalar or a vector of same length as @var{y}.
+## If set to a non-empty value, subtract it from @var{y} and fit a simple
+## exponential decaying to zero.
+## Use this if the background is known to avoid some computation.
+##
+## If set to empty (the default), keep @var{y} intact and treat the
+## background as another parameter to be fitted.
+## In such case, the result will contain additional field @code{fitb},
+## which contains the fit of an exponential and a constant term.
+## The fitted background is available in the field @code{fitb.bg}.
+## This involves additional computation steps and will therefore
+## take longer.
+##
 ## @end table
 ##
 ## If @var{y} is a matrix, fit vectors along dimension @var{dim}
@@ -54,7 +70,9 @@ function r = fit_decay(varargin)
 		end
 		x.fitl = fits.fitl;
 		x.fite = fits.fite;
-		x.fitb = fits.fitb;
+		if (isfield(fits, "fitb"))
+			x.fitb = fits.fitb;
+		end
 		r = x;
 		return;
 	end
@@ -66,6 +84,7 @@ function r = fit_decay(varargin)
 	p.addParameter("xmax", Inf);
 	p.addParameter("ymin", -Inf);
 	p.addParameter("ymax", Inf);
+	p.addParameter("bg", []);
 	p.addParameter("dim", 1, @isnumeric);
 	p.addSwitch("progress");
 	p.parse(varargin{:});
@@ -75,6 +94,7 @@ function r = fit_decay(varargin)
 	tmax = p.Results.xmax;
 	ymin = p.Results.ymin;
 	ymax = p.Results.ymax;
+	bg = p.Results.bg;
 	dim = p.Results.dim;
 	progress = p.Results.progress;
 
@@ -90,7 +110,7 @@ function r = fit_decay(varargin)
 
 	if (isvector(in))
 		m = m & ymin <= in & in <= ymax;
-		r = _fit_decay(t(m), in(m));
+		r = _fit_decay(t(m), in(m), bg);
 	else
 		## Matrix argument.
 		## Process each vector in dimension DIM individually.
@@ -118,7 +138,7 @@ function r = fit_decay(varargin)
 				fprintf(stderr, "fit_decay: %d/%d\n", k, totalk);
 			end
 			m = m & ymin <= in(:,k) & in(:,k) <= ymax;
-			r(k) = _fit_decay(t(m), in(m,k));
+			r(k) = _fit_decay(t(m), in(m,k), bg);
 		end
 
 		## Make the result match the input in dimensions
@@ -127,28 +147,54 @@ function r = fit_decay(varargin)
 	end
 end
 
-function x = _fit_decay(t, in)
-	## Non-zero elements
-	nz = in > 0;
+function x = _fit_decay(t, in, bg)
+	## Without background
+	if (!isempty(bg))
+		in0 = in - bg;
+	else
+		in0 = in;
+	end
+
+	## Non-zero elements (need to be avoided in preliminary fit
+	## due to the logarithm).
+	nz = in0 > 0;
 
 	## Linearized model (preliminary fit)
-	[x.fitl.beta, s] = polyfit(t(nz), log(in(nz)), 1);
+	[x.fitl.beta, s] = polyfit(t(nz), log(in0(nz)), 1);
 	x.fitl.tau = -1 / x.fitl.beta(1);
-	x.fitl.f = @(t) exp(polyval(x.fitl.beta, t));
+	if (isempty(bg))
+		x.fitl.f = @(t) exp(polyval(x.fitl.beta, t));
+	elseif (isscalar(bg))
+		x.fitl.f = @(t) exp(polyval(x.fitl.beta, t)) + bg;
+	elseif (!isempty(bg))
+		x.fitl.f = @(t) exp(polyval(x.fitl.beta, t)) + interp1(t, bg, t1);
+	end
 	x.fitl.beta_std = s.normr * sqrt(diag(s.C) / s.df);
 
 	## Exponential model
 	b0 = [exp(x.fitl.beta(2)), x.fitl.tau];
 	s = struct();
-	[~, s.beta, s.cvg, s.iter] = leasqr(t, in, b0, @model_simple,
+	[~, s.beta, s.cvg, s.iter] = leasqr(t, in0, b0, @model_simple,
 		[], 30, [], [], @dmodel_simpledb);
 	if (!s.cvg)
 		warning("singon-plasma:convergence",...
 			"Convergence not reached after %d iterations.", s.iter);
 	end
-	s.f = @(t) model_simple(t, s.beta);
+	if (isempty(bg))
+		s.f = @(t) model_simple(t, s.beta);
+	elseif (isscalar(bg))
+		s.f = @(t) model_simple(t, s.beta) + bg;
+	elseif (!isempty(bg))
+		s.f = @(t1) model_simple(t1, s.beta) + interp1(t, bg, t1);
+	end
 	s.tau = s.beta(2);
 	x.fite = s;
+
+	if (!isempty(bg))
+		## Known value of background used, nothing more to fit
+		return;
+	end
+	## Otherwise, fit the background
 
 	## Exponential model with constant
 	b0 = [exp(x.fitl.beta(2)), x.fite.tau, 0];
@@ -165,6 +211,7 @@ function x = _fit_decay(t, in)
 	x.fitb = s;
 
 	## Correct exponential model using new y-intercept
+	## TODO: Is this meaningful if we know bg is nonzero?
 	b0 = x.fitb.beta(1:2);
 	s = struct();
 	[inm, s.beta, s.cvg, s.iter, s.cor, s.cov]...
@@ -229,10 +276,18 @@ end
 %! assert(fit.fitb.tau, 1.25, 1e-12);
 %! assert(fit.fite.tau, 1.25, 1e-12);
 
-## Fit data with background
+## Fit data with unknown background
 %!test
 %! fit = fit_decay(x, y + 5, "xmin", 2);
 %! assert(fit.fitb.tau, 1.25, 1e-12);
+%! assert(fit.fitb.bg, 5, 1e-11);
+
+## Fit data with known background
+%!test
+%! fit = fit_decay(x, y + 5, "xmin", 2, "bg", 5);
+%! assert(fit.fitl.tau, 1.25, 1e-12);
+%! assert(fit.fite.tau, 1.25, 1e-12);
+%! assert(!isfield(fit, "fitb"));
 
 ## Use a struct argument and preserve its fields.
 %!test

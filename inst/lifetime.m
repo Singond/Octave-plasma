@@ -3,6 +3,7 @@
 ## @deftypefnx {} {@var{tau} =} lifetime (@var{x}, @var{t}, @var{dim})
 ## @deftypefnx {} {@var{tau} =} lifetime (@dots{}, @
 ##     @qcode{"limits"}, @code{[@var{tmin}, @var{tmax}]})
+## @deftypefnx {} {@var{tau} =} lifetime (@dots{}, @qcode{"bg"}, @var{tbase})
 ## @deftypefnx {} {@var{tau} =} lifetime (@dots{}, @qcode{"smooth"}, @var{k})
 ## @deftypefnx {} {@var{tau} =} lifetime (@dots{}, @qcode{"progress"})
 ## @deftypefnx {} {[@var{tau}, @var{tausig}, @var{fits}, @var{xsmooth}] =} @
@@ -18,7 +19,9 @@
 ## instead of columns.
 ## Parameter @qcode{"limits"} sets the interval of @var{t} where the fit
 ## is performed. Values outside this range are ignored.
-## If given the @qcode{"progress"} option, display messages periodically
+## If given a non-empty background @var{tbase}, subtract it from @var{t}
+## before calculating the fit.
+## With the @qcode{"progress"} option, display messages periodically
 ## showing the progress.
 ##
 ## Before fitting, values of @var{x} can be smoothed by a convolution
@@ -32,6 +35,7 @@ function [tau, tausig, fits, x] = lifetime(varargin)
 	p.addRequired("t");
 	p.addOptional("dim", 1, @isnumeric);
 	p.addParameter("limits", [-Inf Inf]);
+	p.addParameter("bg", []);
 	p.addParameter("smooth", []);
 	p.addSwitch("progress");
 	p.parse(varargin{:});
@@ -50,7 +54,8 @@ function [tau, tausig, fits, x] = lifetime(varargin)
 	args = {t; x;
 		"dim"; p.Results.dim;
 		"xmin"; p.Results.limits(1);
-		"xmax"; p.Results.limits(2)};
+		"xmax"; p.Results.limits(2);
+		"bg", p.Results.bg};
 	if (p.Results.progress)
 		args{end+1} = "progress";
 	end
