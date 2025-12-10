@@ -4,6 +4,10 @@ This is a changelog for the Octave `singon-plasma` package.
 
 [Unreleased]
 ------------
+### Added
+- Function for extracting laser beam profile from data.
+  See `lif.beamprofile`.
+
 ### Changed
 - Improved the performance of `lifetime`.
 - Inspecting fits in `lif.plot_lifetime` and `lif.plot_lifetimex` will
