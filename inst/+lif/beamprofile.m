@@ -1,3 +1,18 @@
+## -*- texinfo -*-
+## @deftypefn  {} {@var{prof} =} lif.beamprofile (@var{b})
+## @deftypefnx {} {@var{prof} =} lif.beamprofile (@var{b}, @var{E})
+## @deftypefnx {} {@var{prof} =} lif.beamprofile (@var{b}, @var{E}, @var{dim})
+## @deftypefnx {} {@var{prof} =} lif.beamprofile (@dots{}, @var{param}, @var{value})
+## @deftypefnx {} {[@var{prof}, @var{E}, @var{fn}] =} lif.beamprofile (@dots{})
+##
+## @table @asis
+## @item @qcode{"smooth"}
+## Length of window used to smooth the profile in direction @var{dim}.
+##
+## @item @qcode{"energysmooth"}
+## Length of window used to smooth the profile in energy direction.
+##
+## @end deftypefn
 function [profile, E, profilefun] = beamprofile(b, E=[], dim=1, varargin)
 	ip = inputParser;
 	ip.addParameter("smooth", [], @isnumeric);
@@ -50,3 +65,34 @@ function [profile, E, profilefun] = beamprofile(b, E=[], dim=1, varargin)
 		profilefun = @(E1) interp1(E, profile', E1, "extrap")';
 	end
 end
+
+%!shared bi, b
+%! bi = [0 1 1 2 4 7 9 8 6 2 1 1 2 1 0]';
+%! b = bi .* [2 4 5 6 7];
+
+%!test
+%! [B, E] = lif.beamprofile(b, [2 4 5 6 7]);
+%! assert(B, b);
+
+%!test
+%! [B, E] = lif.beamprofile(b, [2 4 5 6 7], 1, "smooth", 3);
+%! assert(B(:,1), movmean(bi * 2, 3));
+%! assert(B(:,2), movmean(bi * 4, 3));
+%! assert(B(:,3), movmean(bi * 5, 3));
+%! assert(B(:,4), movmean(bi * 6, 3));
+%! assert(B(:,5), movmean(bi * 7, 3));
+
+%!test
+%! [~, ~, fn] = lif.beamprofile(b, [2 4 5 6 7]);
+%! assert(fn(2), bi * 2);  # given value
+%! assert(fn(4), bi * 4);  # given value
+%! assert(fn(3), bi * 3);  # interpolated value
+
+%!# Higher dimensions
+%!shared bi, b
+%! bi = [0 1 1 2 4 7 9 8 6 2 1 1 2 1 0]';
+%! b = repmat(bi, 1, 8) .* reshape([2 4 5 6 7], 1, 1, []);
+
+%!test
+%! [B, E] = lif.beamprofile(b, [2 4 5 6 7]);
+%! assert(B, squeeze(sum(b, 2)));
