@@ -33,7 +33,7 @@ function [profile, E] = beamprofile(b, E=[], dim=1, varargin)
 	profile = squeeze(permute(profile, [dim Edim otherdims]));
 
 	## Sort by energy (needed for smoothing)
-	[E, Eorder] = sort(E);
+	[E, Eorder] = sort(E(:));
 	profile = profile(:,Eorder);
 
 	## Smooth in spatial dimension (assume uniform spacing)
