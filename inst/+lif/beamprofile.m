@@ -1,4 +1,4 @@
-function [profile, E] = beamprofile(b, E=[], dim=1, varargin)
+function [profile, E, profilefun] = beamprofile(b, E=[], dim=1, varargin)
 	ip = inputParser;
 	ip.addParameter("smooth", [], @isnumeric);
 	ip.addParameter("energysmooth", [], @isnumeric);
@@ -44,5 +44,9 @@ function [profile, E] = beamprofile(b, E=[], dim=1, varargin)
 	## Smooth in energy dimension (allow non-uniform spacing)
 	if (!isempty(win = ip.Results.energysmooth))
 		profile = movmean(profile, win, 2, "SamplePoints", E);
+	end
+
+	if (isargout(3))
+		profilefun = @(E1) interp1(E, profile', E1, "extrap")';
 	end
 end
