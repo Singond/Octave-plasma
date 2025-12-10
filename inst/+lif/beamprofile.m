@@ -12,11 +12,17 @@
 ## @item @qcode{"energysmooth"}
 ## Length of window used to smooth the profile in energy direction.
 ##
+## @item @qcode{"energypolyfit"}
+## Degree of polynomial to fit in the energy direction.
+## Only one of @qcode{"energysmooth"} and @qcode{"energypolyfit"} may be given.
+## @end table
+##
 ## @end deftypefn
 function [profile, E, profilefun] = beamprofile(b, E=[], dim=1, varargin)
 	ip = inputParser;
 	ip.addParameter("smooth", [], @isnumeric);
 	ip.addParameter("energysmooth", [], @isnumeric);
+	ip.addParameter("energypolyfit", []);
 	ip.parse(varargin{:});
 
 	if (!isempty(E) && !isvector(E))
@@ -59,6 +65,14 @@ function [profile, E, profilefun] = beamprofile(b, E=[], dim=1, varargin)
 	## Smooth in energy dimension (allow non-uniform spacing)
 	if (!isempty(win = ip.Results.energysmooth))
 		profile = movmean(profile, win, 2, "SamplePoints", E);
+	elseif (!isempty(n = ip.Results.energypolyfit))
+		polys = polyfitm(E(:)', profile, n, 2);
+		EE = repmat(E(:)', rows(profile), 1);
+		y = polys(:,1);
+		for k = 2:columns(polys)
+			y = y .* EE + polys(:,k);
+		end
+		profile = y;
 	end
 
 	if (isargout(3))
